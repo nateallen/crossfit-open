@@ -116,10 +116,11 @@ export async function POST(
     const computedWorkouts: number[] = [];
 
     for (const workout of workouts) {
-      // Get all scores for this workout
+      // Get all scores for this workout, including scaled type
       const workoutScores = await db
         .select({
           scorePrimaryRaw: scores.scorePrimaryRaw,
+          scaled: scores.scaled,
         })
         .from(scores)
         .where(
@@ -130,19 +131,37 @@ export async function POST(
           )
         );
 
-      // Filter out null scores
-      const validScores = workoutScores
-        .map((s) => s.scorePrimaryRaw)
-        .filter((s): s is number => s !== null);
+      // Filter out null scores and separate by scaled type
+      const rxScores: number[] = [];
+      const scaledScores: number[] = [];
+      const foundationsScores: number[] = [];
+
+      for (const s of workoutScores) {
+        if (s.scorePrimaryRaw === null) continue;
+
+        if (s.scaled === 0) {
+          rxScores.push(s.scorePrimaryRaw);
+        } else if (s.scaled === 1) {
+          scaledScores.push(s.scorePrimaryRaw);
+        } else if (s.scaled === 2) {
+          foundationsScores.push(s.scorePrimaryRaw);
+        }
+      }
+
+      // Sort each group based on workout direction
+      const sortFn = (a: number, b: number) =>
+        workout.sortDirection === "asc" ? a - b : b - a;
+
+      rxScores.sort(sortFn);
+      scaledScores.sort(sortFn);
+      foundationsScores.sort(sortFn);
+
+      // Combine in proper order: RX first, then Scaled, then Foundations
+      const validScores = [...rxScores, ...scaledScores, ...foundationsScores];
 
       if (validScores.length === 0) {
         continue;
       }
-
-      // Sort based on workout direction
-      validScores.sort((a, b) =>
-        workout.sortDirection === "asc" ? a - b : b - a
-      );
 
       const totalAthletes = validScores.length;
 

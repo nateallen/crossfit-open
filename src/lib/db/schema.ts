@@ -39,6 +39,7 @@ export const scores = sqliteTable("scores", {
   year: integer("year").notNull(),
   division: integer("division").notNull(),
   workoutOrdinal: integer("workout_ordinal").notNull(),
+  scaled: integer("scaled").notNull().default(0), // 0=RX, 1=Scaled, 2=Foundations
   rank: integer("rank"),
   scoreDisplay: text("score_display"),
   scorePrimaryRaw: integer("score_primary_raw"),
@@ -48,7 +49,8 @@ export const scores = sqliteTable("scores", {
     table.competitorId,
     table.year,
     table.division,
-    table.workoutOrdinal
+    table.workoutOrdinal,
+    table.scaled
   ),
 ]);
 
@@ -69,6 +71,7 @@ export const syncJobs = sqliteTable("sync_jobs", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   year: integer("year").notNull(),
   division: integer("division").notNull(),
+  scaled: integer("scaled").notNull().default(0), // 0=RX, 1=Scaled, 2=Foundations
   status: text("status").default("pending"), // pending, running, completed, failed
   currentPage: integer("current_page").default(0),
   totalPages: integer("total_pages"),

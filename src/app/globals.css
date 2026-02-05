@@ -122,4 +122,16 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Fix mobile double-tap issue */
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [tabindex]:not([tabindex="-1"]) {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 }

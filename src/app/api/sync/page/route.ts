@@ -55,10 +55,12 @@ export async function POST(request: NextRequest) {
     // Fetch the next page
     const nextPage = (job.currentPage || 0) + 1;
 
+    const scaledValue = job.scaled ?? 0; // Default to RX for backwards compatibility
+
     const url = new URL(`${CROSSFIT_API_BASE}/${job.year}/leaderboards`);
     url.searchParams.set("view", "0");
     url.searchParams.set("division", job.division.toString());
-    url.searchParams.set("scaled", "0");
+    url.searchParams.set("scaled", scaledValue.toString());
     url.searchParams.set("page", nextPage.toString());
     url.searchParams.set("region", "0");
     url.searchParams.set("sort", "0");
@@ -98,6 +100,7 @@ export async function POST(request: NextRequest) {
       year: number;
       division: number;
       workoutOrdinal: number;
+      scaled: number;
       rank: number | null;
       scoreDisplay: string | null;
       scorePrimaryRaw: number | null;
@@ -150,6 +153,7 @@ export async function POST(request: NextRequest) {
           year: job.year,
           division: job.division,
           workoutOrdinal: score.ordinal,
+          scaled: scaledValue,
           rank: score.rank ? parseInt(score.rank, 10) : null,
           scoreDisplay: score.scoreDisplay || null,
           scorePrimaryRaw,

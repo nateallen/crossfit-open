@@ -5,7 +5,7 @@ import { eq, and, sql } from "drizzle-orm";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { year, division } = body;
+    const { year, division, scaled = 0 } = body;
 
     // Validate inputs
     if (!year || !division) {
@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
 
     const yearNum = parseInt(year, 10);
     const divisionNum = parseInt(division, 10);
+    const scaledNum = parseInt(scaled, 10);
 
     if (yearNum < 2015 || yearNum > 2030) {
       return NextResponse.json(
@@ -25,7 +26,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if there's already a running sync job for this year/division
+    if (scaledNum < 0 || scaledNum > 2) {
+      return NextResponse.json(
+        { error: "Invalid scaled value (0=RX, 1=Scaled, 2=Foundations)" },
+        { status: 400 }
+      );
+    }
+
+    // Check if there's already a running sync job for this year/division/scaled
     const existingJobs = await db
       .select()
       .from(syncJobs)
@@ -33,6 +41,7 @@ export async function POST(request: NextRequest) {
         and(
           eq(syncJobs.year, yearNum),
           eq(syncJobs.division, divisionNum),
+          eq(syncJobs.scaled, scaledNum),
           eq(syncJobs.status, "running")
         )
       );
@@ -49,8 +58,8 @@ export async function POST(request: NextRequest) {
 
     // Create a new sync job using raw SQL to avoid Drizzle/Turso timestamp issues
     await db.run(sql`
-      INSERT INTO sync_jobs (year, division, status, current_page, started_at)
-      VALUES (${yearNum}, ${divisionNum}, 'running', 0, ${Math.floor(Date.now() / 1000)})
+      INSERT INTO sync_jobs (year, division, scaled, status, current_page, started_at)
+      VALUES (${yearNum}, ${divisionNum}, ${scaledNum}, 'running', 0, ${Math.floor(Date.now() / 1000)})
     `);
 
     // Get the job we just created
@@ -61,17 +70,21 @@ export async function POST(request: NextRequest) {
         and(
           eq(syncJobs.year, yearNum),
           eq(syncJobs.division, divisionNum),
+          eq(syncJobs.scaled, scaledNum),
           eq(syncJobs.status, "running")
         )
       )
       .limit(1);
 
     const jobId = newJobs[0]?.id;
+    const scaledLabel = scaledNum === 0 ? "RX" : scaledNum === 1 ? "Scaled" : "Foundations";
 
     return NextResponse.json({
       success: true,
       jobId,
-      message: "Sync job started. Poll /api/sync/page to process pages.",
+      scaled: scaledNum,
+      scaledLabel,
+      message: `Sync job started for ${scaledLabel}. Poll /api/sync/page to process pages.`,
     });
   } catch (error) {
     console.error("Sync start error:", error);

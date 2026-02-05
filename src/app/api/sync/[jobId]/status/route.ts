@@ -28,10 +28,15 @@ export async function GET(
 
     const job = jobs[0];
 
+    const scaledValue = job.scaled ?? 0;
+    const scaledLabel = scaledValue === 0 ? "RX" : scaledValue === 1 ? "Scaled" : "Foundations";
+
     return NextResponse.json({
       id: job.id,
       year: job.year,
       division: job.division,
+      scaled: scaledValue,
+      scaledLabel,
       status: job.status,
       currentPage: job.currentPage,
       totalPages: job.totalPages,
