@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   Select,
   SelectContent,
@@ -11,221 +11,239 @@ import {
 import { WorkoutCard } from "@/components/simulator/WorkoutCard";
 import { ResultsPanel } from "@/components/simulator/ResultsPanel";
 import { Header } from "@/components/Header";
-import type { WorkoutMetadata, ParsedScore, UserScore, DivisionId } from "@/types";
+import type { ParsedScore, UserScore, DivisionId } from "@/types";
 import { DIVISIONS } from "@/types";
 import { getWorkoutsForYear, getAvailableYears } from "@/lib/workout-metadata";
-
-// New percentile data structure with hierarchy support
-interface WorkoutPercentileData {
-  byScaled: Record<number, Array<{
-    percentile: number;
-    lowerBound: number;
-    upperBound: number;
-  }>>;
-  counts: {
-    rx: number;
-    scaled: number;
-    foundations: number;
-    total: number;
-  };
-}
-
-type PercentileDataMap = Record<number, WorkoutPercentileData>;
 
 // Currently we only support RX score entry (scaled=0)
 const USER_SCALED_TYPE = 0;
 
-/**
- * Calculate overall percentile for an RX score using the hierarchy:
- * RX (best) > Scaled > Foundations (worst)
- *
- * An RX athlete's overall rank is their rank within RX.
- * Overall percentile = (rank within RX) / (total athletes) * 100
- */
-function calculateOverallPercentile(
-  percentileWithinType: number,
-  counts: WorkoutPercentileData["counts"],
-  scaledType: number
-): { overallPercentile: number; estimatedRank: number } {
-  let rankWithinTotal: number;
-
-  if (scaledType === 0) {
-    // RX: rank is just their position within RX
-    rankWithinTotal = Math.round((percentileWithinType / 100) * counts.rx);
-  } else if (scaledType === 1) {
-    // Scaled: rank = all RX + position within Scaled
-    rankWithinTotal = counts.rx + Math.round((percentileWithinType / 100) * counts.scaled);
-  } else {
-    // Foundations: rank = all RX + all Scaled + position within Foundations
-    rankWithinTotal = counts.rx + counts.scaled + Math.round((percentileWithinType / 100) * counts.foundations);
-  }
-
-  const overallPercentile = counts.total > 0
-    ? Math.round((rankWithinTotal / counts.total) * 100)
-    : 100;
-
-  return {
-    overallPercentile: Math.max(1, Math.min(100, overallPercentile)),
-    estimatedRank: rankWithinTotal,
-  };
-}
-
 export default function SimulatorPage() {
-  const [year, setYear] = useState(2024);
+  const [year, setYear] = useState(2025);
   const [division, setDivision] = useState<DivisionId>(DIVISIONS.MEN);
   const [scores, setScores] = useState<Record<number, UserScore>>({});
   const [activeWorkout, setActiveWorkout] = useState<number | null>(null);
-  const [percentileData, setPercentileData] = useState<PercentileDataMap>({});
-  const [totalAthletes, setTotalAthletes] = useState<number | null>(null);
+  const [loadingWorkouts, setLoadingWorkouts] = useState<Set<number>>(new Set());
+  const [totalAthletes, setTotalAthletes] = useState<Record<number, number>>({});
+
+  // Overall rank state
+  const [overallRank, setOverallRank] = useState<number | null>(null);
+  const [overallPercentile, setOverallPercentile] = useState<number | null>(null);
+  const [loadingOverall, setLoadingOverall] = useState(false);
+
+  // Track pending lookups to cancel stale requests
+  const pendingLookups = useRef<Record<number, AbortController>>({});
+  const pendingOverallLookup = useRef<AbortController | null>(null);
+  // Track what scores we've already looked up to avoid duplicate lookups
+  const lastLookedUp = useRef<Record<number, string>>({});
+  const lastOverallPoints = useRef<number | null>(null);
 
   const availableYears = getAvailableYears();
   const workouts = getWorkoutsForYear(year);
 
-  // Fetch percentile data when year/division changes
-  useEffect(() => {
-    const fetchPercentiles = async () => {
-      try {
-        const response = await fetch(`/api/percentiles/${year}/${division}`);
-        if (response.ok) {
-          const data = await response.json();
-          setPercentileData(data.percentiles || {});
-
-          // Get total athletes from first workout's counts
-          const firstWorkout = Object.values(data.percentiles || {})[0] as WorkoutPercentileData | undefined;
-          if (firstWorkout?.counts?.total) {
-            setTotalAthletes(firstWorkout.counts.total);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch percentiles:", error);
-      }
-    };
-
-    fetchPercentiles();
-  }, [year, division]);
-
   // Reset scores when year changes
   useEffect(() => {
     setScores({});
+    setTotalAthletes({});
+    setOverallRank(null);
+    setOverallPercentile(null);
+    lastLookedUp.current = {};
+    lastOverallPoints.current = null;
     setActiveWorkout(workouts[0]?.ordinal || null);
   }, [year]);
 
-  // Recalculate percentiles when data is loaded or updated
+  // Look up overall rank when all workouts are entered
   useEffect(() => {
-    if (Object.keys(percentileData).length === 0) return;
-
-    setScores((prev) => {
-      const updated = { ...prev };
-      for (const [ordinalStr, score] of Object.entries(prev)) {
-        const ordinal = parseInt(ordinalStr, 10);
-        if (!score.parsed?.isValid) continue;
-
-        const workoutData = percentileData[ordinal];
-        if (!workoutData) continue;
-
-        const rxBuckets = workoutData.byScaled[USER_SCALED_TYPE] || [];
-        if (rxBuckets.length === 0) continue;
-
-        const workout = workouts.find((w) => w.ordinal === ordinal);
-        const isAsc = workout?.sortDirection === "asc";
-
-        let percentileWithinRx: number | null = null;
-
-        // Find percentile within RX
-        for (const bucket of rxBuckets) {
-          const inRange = isAsc
-            ? score.parsed.scorePrimaryRaw <= bucket.upperBound
-            : score.parsed.scorePrimaryRaw >= bucket.lowerBound;
-
-          if (inRange) {
-            percentileWithinRx = bucket.percentile;
-            break;
-          }
-        }
-
-        // Handle scores outside our data range
-        if (percentileWithinRx === null) {
-          percentileWithinRx = 100; // Bottom of RX
-        }
-
-        // Calculate overall percentile using hierarchy
-        const { overallPercentile, estimatedRank } = calculateOverallPercentile(
-          percentileWithinRx,
-          workoutData.counts,
-          USER_SCALED_TYPE
-        );
-
-        updated[ordinal] = {
-          ...score,
-          percentile: overallPercentile,
-          estimatedRank,
-        };
-      }
-      return updated;
+    // Calculate total points from all workouts
+    const allWorkoutsEntered = workouts.every((w) => {
+      const score = scores[w.ordinal];
+      return score?.estimatedRank && score?.parsed?.isValid;
     });
-  }, [percentileData, workouts]);
+
+    if (!allWorkoutsEntered || workouts.length === 0) {
+      setOverallRank(null);
+      setOverallPercentile(null);
+      return;
+    }
+
+    // Calculate total points (sum of ranks)
+    const totalPoints = workouts.reduce((sum, w) => {
+      const rank = scores[w.ordinal]?.estimatedRank || 0;
+      return sum + rank;
+    }, 0);
+
+    // Skip if we already looked up this exact total
+    if (lastOverallPoints.current === totalPoints) {
+      return;
+    }
+    lastOverallPoints.current = totalPoints;
+
+    // Cancel pending overall lookup
+    if (pendingOverallLookup.current) {
+      pendingOverallLookup.current.abort();
+    }
+
+    const controller = new AbortController();
+    pendingOverallLookup.current = controller;
+
+    setLoadingOverall(true);
+
+    fetch("/api/overall-lookup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        year,
+        division,
+        scaled: USER_SCALED_TYPE,
+        totalPoints,
+      }),
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Overall lookup failed");
+        return response.json();
+      })
+      .then((result) => {
+        if (result.success) {
+          setOverallRank(result.overallRank);
+          setOverallPercentile(result.overallPercentile);
+        }
+      })
+      .catch((error) => {
+        if ((error as Error).name === "AbortError") return;
+        console.error("Overall lookup error:", error);
+        lastOverallPoints.current = null; // Allow retry
+      })
+      .finally(() => {
+        setLoadingOverall(false);
+        pendingOverallLookup.current = null;
+      });
+  }, [scores, workouts, year, division]);
+
+  // Look up percentile using the anchor-based API
+  const lookupPercentile = useCallback(
+    async (ordinal: number, score: string, tiebreak?: string) => {
+      // Create a lookup key that includes tiebreak
+      const lookupKey = `${score}|${tiebreak || ""}`;
+
+      // Skip if we already looked up this exact score+tiebreak
+      if (lastLookedUp.current[ordinal] === lookupKey) {
+        return;
+      }
+      lastLookedUp.current[ordinal] = lookupKey;
+
+      // Cancel any pending lookup for this workout
+      if (pendingLookups.current[ordinal]) {
+        pendingLookups.current[ordinal].abort();
+      }
+
+      const controller = new AbortController();
+      pendingLookups.current[ordinal] = controller;
+
+      setLoadingWorkouts((prev) => new Set(prev).add(ordinal));
+
+      try {
+        const response = await fetch("/api/percentile-lookup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            year,
+            division,
+            scaled: USER_SCALED_TYPE,
+            workoutOrdinal: ordinal,
+            score,
+            tiebreak: tiebreak || undefined,
+          }),
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error("Lookup failed");
+        }
+
+        const result = await response.json();
+
+        // Update score with percentile result
+        setScores((prev) => ({
+          ...prev,
+          [ordinal]: {
+            ...prev[ordinal],
+            percentile: result.success ? result.percentile : null,
+            estimatedRank: result.success ? result.estimatedRank : null,
+          },
+        }));
+
+        // Update total athletes for this workout
+        if (result.totalCompetitors) {
+          setTotalAthletes((prev) => ({
+            ...prev,
+            [ordinal]: result.totalCompetitors,
+          }));
+        }
+      } catch (error) {
+        if ((error as Error).name === "AbortError") {
+          return; // Request was cancelled, ignore
+        }
+        console.error("Percentile lookup error:", error);
+        // Clear the lookup cache on error so user can retry
+        delete lastLookedUp.current[ordinal];
+      } finally {
+        setLoadingWorkouts((prev) => {
+          const next = new Set(prev);
+          next.delete(ordinal);
+          return next;
+        });
+        delete pendingLookups.current[ordinal];
+      }
+    },
+    [year, division]
+  );
 
   const handleScoreChange = useCallback(
-    (ordinal: number, value: string, parsed: ParsedScore | null) => {
+    (ordinal: number, value: string, parsed: ParsedScore | null, tiebreak?: string) => {
+      // Update the input immediately
       setScores((prev) => {
-        let percentile: number | null = null;
-        let estimatedRank: number | null = null;
-
-        const workoutData = percentileData[ordinal];
-        const rxBuckets = workoutData?.byScaled?.[USER_SCALED_TYPE] || [];
-
-        if (parsed?.isValid && rxBuckets.length > 0 && workoutData?.counts) {
-          const workout = workouts.find((w) => w.ordinal === ordinal);
-          const isAsc = workout?.sortDirection === "asc";
-
-          let percentileWithinRx: number | null = null;
-
-          // Find percentile within RX
-          for (const bucket of rxBuckets) {
-            let inRange: boolean;
-
-            if (isAsc) {
-              // For time (lower is better): score should be <= upperBound
-              inRange = parsed.scorePrimaryRaw <= bucket.upperBound;
-            } else {
-              // For reps/load (higher is better): score should be >= lowerBound
-              inRange = parsed.scorePrimaryRaw >= bucket.lowerBound;
-            }
-
-            if (inRange) {
-              percentileWithinRx = bucket.percentile;
-              break;
-            }
-          }
-
-          // Handle scores outside our data range
-          if (percentileWithinRx === null) {
-            percentileWithinRx = 100; // Bottom of RX
-          }
-
-          // Calculate overall percentile using hierarchy
-          const result = calculateOverallPercentile(
-            percentileWithinRx,
-            workoutData.counts,
-            USER_SCALED_TYPE
-          );
-          percentile = result.overallPercentile;
-          estimatedRank = result.estimatedRank;
+        // Don't update if nothing changed
+        if (prev[ordinal]?.input === value && prev[ordinal]?.tiebreak === tiebreak) {
+          return prev;
         }
-
         return {
           ...prev,
           [ordinal]: {
             input: value,
             parsed,
-            percentile,
-            estimatedRank,
+            percentile: prev[ordinal]?.percentile ?? null,
+            estimatedRank: prev[ordinal]?.estimatedRank ?? null,
+            tiebreak,
           },
         };
       });
+
+      // If we have a valid parsed score, look up the percentile
+      if (parsed?.isValid && value.trim()) {
+        lookupPercentile(ordinal, value, tiebreak);
+      } else if (!value.trim()) {
+        // Clear percentile if score is empty
+        delete lastLookedUp.current[ordinal];
+        setScores((prev) => ({
+          ...prev,
+          [ordinal]: {
+            input: value,
+            parsed,
+            percentile: null,
+            estimatedRank: null,
+            tiebreak: undefined,
+          },
+        }));
+      }
     },
-    [percentileData, workouts]
+    [lookupPercentile]
   );
+
+  // Get the total athletes for a specific workout
+  const getDisplayTotalAthletes = (ordinal: number) => {
+    return totalAthletes[ordinal] || null;
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -282,14 +300,16 @@ export default function SimulatorPage() {
                   key={workout.ordinal}
                   workout={workout}
                   value={score.input}
-                  onChange={(value, parsed) =>
-                    handleScoreChange(workout.ordinal, value, parsed)
+                  tiebreak={score.tiebreak}
+                  onChange={(value, parsed, tiebreak) =>
+                    handleScoreChange(workout.ordinal, value, parsed, tiebreak)
                   }
                   percentile={score.percentile}
                   estimatedRank={score.estimatedRank}
-                  totalAthletes={totalAthletes}
+                  totalAthletes={getDisplayTotalAthletes(workout.ordinal)}
                   isActive={activeWorkout === workout.ordinal}
                   onFocus={() => setActiveWorkout(workout.ordinal)}
+                  isLoading={loadingWorkouts.has(workout.ordinal)}
                 />
               );
             })}
@@ -301,7 +321,10 @@ export default function SimulatorPage() {
               year={year}
               workouts={workouts}
               scores={scores}
-              totalAthletes={totalAthletes}
+              totalAthletes={Object.values(totalAthletes)[0] || null}
+              overallRank={overallRank}
+              overallPercentile={overallPercentile}
+              loadingOverall={loadingOverall}
             />
           </div>
         </div>

@@ -11,6 +11,9 @@ interface ResultsPanelProps {
   workouts: WorkoutMetadata[];
   scores: Record<number, UserScore>;
   totalAthletes: number | null;
+  overallRank?: number | null;
+  overallPercentile?: number | null;
+  loadingOverall?: boolean;
   className?: string;
 }
 
@@ -19,6 +22,9 @@ export function ResultsPanel({
   workouts,
   scores,
   totalAthletes,
+  overallRank: propOverallRank,
+  overallPercentile: propOverallPercentile,
+  loadingOverall = false,
   className,
 }: ResultsPanelProps) {
   // Calculate overall stats
@@ -28,42 +34,47 @@ export function ResultsPanel({
   const totalWorkouts = workouts.length;
   const allEntered = workoutsEntered === totalWorkouts && totalWorkouts > 0;
 
-  // Calculate estimated overall rank (sum of individual ranks)
+  // Calculate total points (sum of ranks) and average percentile
   let totalPoints = 0;
+  let percentileSum = 0;
   let canCalculateOverall = allEntered;
 
   for (const workout of workouts) {
     const score = scores[workout.ordinal];
-    if (score?.estimatedRank) {
+    if (score?.estimatedRank && score?.percentile !== null && score?.percentile !== undefined) {
       totalPoints += score.estimatedRank;
+      percentileSum += score.percentile;
     } else {
       canCalculateOverall = false;
     }
   }
 
-  // Estimate overall rank based on total points
-  // This is a rough estimate - actual ranking depends on points distribution
-  const estimatedOverallRank = canCalculateOverall
+  // Use prop values from overall leaderboard lookup if available,
+  // otherwise fall back to estimated values from per-workout ranks
+  const estimatedOverallRank = propOverallRank ?? (canCalculateOverall
     ? Math.round(totalPoints / totalWorkouts)
-    : null;
+    : null);
 
-  const overallPercentile =
+  // Use prop percentile from overall lookup if available
+  const overallPercentile = propOverallPercentile ?? (
     estimatedOverallRank && totalAthletes
-      ? Math.round((estimatedOverallRank / totalAthletes) * 100)
-      : null;
+      ? Math.round(((totalAthletes - estimatedOverallRank + 1) / totalAthletes) * 1000) / 10
+      : null
+  );
 
   const getPercentileLabel = (p: number) => {
-    if (p >= 100) return "N/A";
     return `${p}%`;
   };
 
+  // Higher percentile = better (green/blue colors)
   const getPercentileColor = (p: number) => {
-    if (p <= 1) return "text-blue-700";
-    if (p <= 5) return "text-blue-600";
-    if (p <= 10) return "text-blue-500";
-    if (p <= 25) return "text-green-500";
-    if (p <= 50) return "text-yellow-600";
-    return "text-orange-500";
+    if (p >= 99) return "text-blue-700";
+    if (p >= 95) return "text-blue-600";
+    if (p >= 90) return "text-blue-500";
+    if (p >= 75) return "text-green-500";
+    if (p >= 50) return "text-yellow-600";
+    if (p >= 25) return "text-orange-500";
+    return "text-red-500";
   };
 
   const formatRank = (rank: number) => {
@@ -101,24 +112,32 @@ export function ResultsPanel({
             <p
               className={cn(
                 "text-2xl font-bold",
-                overallPercentile
-                  ? getPercentileColor(overallPercentile)
-                  : "text-muted-foreground"
+                loadingOverall
+                  ? "text-muted-foreground animate-pulse"
+                  : overallPercentile
+                    ? getPercentileColor(overallPercentile)
+                    : "text-muted-foreground"
               )}
             >
-              {overallPercentile
-                ? getPercentileLabel(overallPercentile)
-                : "Enter all scores"}
+              {loadingOverall
+                ? "Calculating..."
+                : overallPercentile
+                  ? getPercentileLabel(overallPercentile)
+                  : "Enter all scores"}
             </p>
           </div>
 
           {/* Estimated Rank */}
           <div className="flex justify-between items-center py-2 border-b">
-            <span className="text-muted-foreground">Estimated Rank:</span>
-            <span className="font-semibold">
-              {estimatedOverallRank && totalAthletes
-                ? `${formatRank(estimatedOverallRank)} / ${totalAthletes.toLocaleString()}`
-                : "-"}
+            <span className="text-muted-foreground">
+              {propOverallRank ? "Overall Rank:" : "Estimated Rank:"}
+            </span>
+            <span className={cn("font-semibold", loadingOverall && "animate-pulse")}>
+              {loadingOverall
+                ? "..."
+                : estimatedOverallRank && totalAthletes
+                  ? `${formatRank(estimatedOverallRank)} / ${totalAthletes.toLocaleString()}`
+                  : "-"}
             </span>
           </div>
 
@@ -154,6 +173,7 @@ export function ResultsPanel({
           {workouts.map((workout) => {
             const score = scores[workout.ordinal];
             const percentile = score?.percentile;
+            const rank = score?.estimatedRank;
 
             return (
               <div
@@ -162,15 +182,22 @@ export function ResultsPanel({
               >
                 <span className="font-medium">{workout.name}</span>
                 {percentile !== null && percentile !== undefined ? (
-                  <Badge
-                    variant="secondary"
-                    className={cn(
-                      "font-semibold",
-                      getPercentileColor(percentile)
+                  <div className="flex items-center gap-2">
+                    {rank && (
+                      <span className="text-sm text-muted-foreground">
+                        {formatRank(rank)}
+                      </span>
                     )}
-                  >
-                    {getPercentileLabel(percentile)}
-                  </Badge>
+                    <Badge
+                      variant="secondary"
+                      className={cn(
+                        "font-semibold",
+                        getPercentileColor(percentile)
+                      )}
+                    >
+                      {getPercentileLabel(percentile)}
+                    </Badge>
+                  </div>
                 ) : (
                   <span className="text-muted-foreground text-sm">
                     Not Entered

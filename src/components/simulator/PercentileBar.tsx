@@ -10,7 +10,7 @@ interface PercentileBarProps {
 /**
  * Visual percentile bar
  * Bar fills from left (worst) to right (best)
- * Lower percentile number = better performance
+ * Higher percentile number = better performance (beat more athletes)
  */
 export function PercentileBar({ percentile, className }: PercentileBarProps) {
   if (percentile === null) {
@@ -22,25 +22,18 @@ export function PercentileBar({ percentile, className }: PercentileBarProps) {
     );
   }
 
-  // Fill from left to right - better scores fill more (toward the right)
-  // percentile of 5 means "top 5%" = 95% fill
-  const fillPercent = 100 - percentile;
+  // Fill equals percentile - 90% means you beat 90% of athletes
+  const fillPercent = percentile;
 
-  // Color based on performance
+  // Color based on performance (higher percentile = better)
   const getBarColor = (p: number) => {
-    if (p <= 1) return "bg-blue-700";
-    if (p <= 5) return "bg-blue-600";
-    if (p <= 10) return "bg-blue-500";
-    if (p <= 25) return "bg-green-500";
-    if (p <= 50) return "bg-yellow-500";
-    if (p <= 75) return "bg-orange-500";
+    if (p >= 99) return "bg-blue-700";
+    if (p >= 95) return "bg-blue-600";
+    if (p >= 90) return "bg-blue-500";
+    if (p >= 75) return "bg-green-500";
+    if (p >= 50) return "bg-yellow-500";
+    if (p >= 25) return "bg-orange-500";
     return "bg-red-500";
-  };
-
-  // Show exact percentile
-  const getLabel = (p: number) => {
-    if (p >= 100) return "Below sampled data";
-    return `${p}%`;
   };
 
   return (
@@ -59,7 +52,7 @@ export function PercentileBar({ percentile, className }: PercentileBarProps) {
       <div className="flex justify-between text-xs">
         <span className="text-muted-foreground">Worst</span>
         <span className={cn("font-medium", getBarColor(percentile).replace("bg-", "text-"))}>
-          {getLabel(percentile)}
+          {percentile}%
         </span>
         <span className="text-muted-foreground">Best</span>
       </div>

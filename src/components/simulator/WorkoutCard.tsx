@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,12 +19,14 @@ import { cn } from "@/lib/utils";
 interface WorkoutCardProps {
   workout: WorkoutMetadata;
   value: string;
-  onChange: (value: string, parsed: ParsedScore | null) => void;
+  tiebreak?: string;
+  onChange: (value: string, parsed: ParsedScore | null, tiebreak?: string) => void;
   percentile: number | null;
   estimatedRank: number | null;
   totalAthletes: number | null;
   isActive: boolean;
   onFocus: () => void;
+  isLoading?: boolean;
 }
 
 /** Check if workout is a hybrid (time for finishers, reps for capped) */
@@ -35,17 +37,19 @@ function isHybridWorkout(workout: WorkoutMetadata): boolean {
 export function WorkoutCard({
   workout,
   value,
+  tiebreak = "",
   onChange,
   percentile,
   estimatedRank,
   totalAthletes,
   isActive,
   onFocus,
+  isLoading = false,
 }: WorkoutCardProps) {
   const [localValue, setLocalValue] = useState(value);
   const [parsed, setParsed] = useState<ParsedScore | null>(null);
   const [didFinish, setDidFinish] = useState<boolean | null>(null);
-  const [tiebreakValue, setTiebreakValue] = useState("");
+  const [tiebreakValue, setTiebreakValue] = useState(tiebreak);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const isHybrid = isHybridWorkout(workout);
@@ -54,9 +58,24 @@ export function WorkoutCard({
   // The parseTimeScore function handles both time and reps input
   const effectiveWorkout: WorkoutMetadata = workout;
 
+  // Track if we've already called onChange for this value/tiebreak to prevent loops
+  const lastReportedValue = useRef(value);
+  const lastReportedTiebreak = useRef(tiebreak);
+
   // Parse on value change with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
+      // Only call onChange if the value or tiebreak actually changed
+      const valueChanged = localValue !== lastReportedValue.current;
+      const tiebreakChanged = tiebreakValue !== lastReportedTiebreak.current;
+
+      if (!valueChanged && !tiebreakChanged) {
+        return;
+      }
+
+      lastReportedValue.current = localValue;
+      lastReportedTiebreak.current = tiebreakValue;
+
       if (localValue.trim()) {
         const result = parseScore(localValue, effectiveWorkout);
         // Add isFinisher flag for hybrid workouts
@@ -64,22 +83,17 @@ export function WorkoutCard({
           result.isFinisher = didFinish === true;
         }
         setParsed(result);
-        onChange(localValue, result.isValid ? result : null);
+        // Pass tiebreak only if it's a valid format (M:SS)
+        const validTiebreak = tiebreakValue.match(/^\d+:\d{2}$/) ? tiebreakValue : undefined;
+        onChange(localValue, result.isValid ? result : null, validTiebreak);
       } else {
         setParsed(null);
-        onChange(localValue, null);
+        onChange(localValue, null, undefined);
       }
-    }, 300);
+    }, 500); // Increased debounce to 500ms for API calls
 
     return () => clearTimeout(timer);
-  }, [localValue, effectiveWorkout, onChange, isHybrid, didFinish]);
-
-  // Sync external value changes
-  useEffect(() => {
-    if (value !== localValue) {
-      setLocalValue(value);
-    }
-  }, [value]);
+  }, [localValue, tiebreakValue, effectiveWorkout, onChange, isHybrid, didFinish]);
 
   // Reset finish status and tiebreak when workout changes
   useEffect(() => {
@@ -90,6 +104,9 @@ export function WorkoutCard({
   const getPlaceholder = () => {
     if (isHybrid && didFinish === null) {
       return "Select if you finished...";
+    }
+    if (isHybrid && didFinish === false) {
+      return "e.g., 136 reps";
     }
     switch (effectiveWorkout.scoreType) {
       case "time":
@@ -297,14 +314,18 @@ export function WorkoutCard({
         )}
 
         {/* Rank Estimate */}
-        {estimatedRank !== null && totalAthletes !== null && (
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground animate-pulse">
+            Looking up percentile...
+          </p>
+        ) : estimatedRank !== null && totalAthletes !== null ? (
           <p className="text-sm text-muted-foreground">
             ≈ {formatRank(estimatedRank, totalAthletes)}
           </p>
-        )}
+        ) : null}
 
         {/* Percentile Bar */}
-        <PercentileBar percentile={percentile} />
+        <PercentileBar percentile={isLoading ? null : percentile} />
       </CardContent>
     </Card>
   );

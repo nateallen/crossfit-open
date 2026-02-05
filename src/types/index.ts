@@ -144,6 +144,7 @@ export interface UserScore {
   parsed: ParsedScore | null;
   percentile: number | null;
   estimatedRank: number | null;
+  tiebreak?: string; // Optional tiebreak time (e.g., "8:41")
 }
 
 export interface SimulatorResults {
