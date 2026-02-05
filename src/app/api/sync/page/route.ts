@@ -10,7 +10,7 @@ import {
 import { getWorkoutMetadata, inferScoreType } from "@/lib/workout-metadata";
 
 const CROSSFIT_API_BASE =
-  "https://c3po.crossfit.com/api/competitions/v2/competitions/open";
+  "https://c3po.crossfit.com/api/leaderboards/v2/competitions/open";
 
 export async function POST(request: NextRequest) {
   try {
