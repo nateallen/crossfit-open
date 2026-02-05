@@ -50,11 +50,9 @@ export function WorkoutCard({
 
   const isHybrid = isHybridWorkout(workout);
 
-  // Determine effective workout config based on finish status
-  const effectiveWorkout: WorkoutMetadata =
-    isHybrid && didFinish === false
-      ? { ...workout, scoreType: workout.cappedScoreType || "reps" }
-      : workout;
+  // For hybrid workouts, keep the original scoreType
+  // The parseTimeScore function handles both time and reps input
+  const effectiveWorkout: WorkoutMetadata = workout;
 
   // Parse on value change with debounce
   useEffect(() => {
