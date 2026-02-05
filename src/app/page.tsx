@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
+import { getAvailableYears } from "@/lib/workout-metadata";
 
 export default function Home() {
   return (
@@ -21,9 +22,6 @@ export default function Home() {
           <div className="flex gap-4 justify-center">
             <Button asChild size="lg">
               <Link href="/simulator">Start Simulator</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/leaderboard">Browse Leaderboard</Link>
             </Button>
           </div>
         </div>
@@ -77,7 +75,7 @@ export default function Home() {
         <div className="mt-16 text-center">
           <h3 className="text-lg font-semibold mb-4">Supported Years</h3>
           <div className="flex gap-3 justify-center flex-wrap">
-            {[2024, 2023].map((year) => (
+            {getAvailableYears().map((year) => (
               <span
                 key={year}
                 className="px-4 py-2 bg-muted rounded-full text-sm font-medium"
@@ -85,9 +83,6 @@ export default function Home() {
                 {year}
               </span>
             ))}
-            <span className="px-4 py-2 bg-muted rounded-full text-sm text-muted-foreground">
-              More coming soon...
-            </span>
           </div>
         </div>
       </main>
