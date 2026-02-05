@@ -40,9 +40,12 @@ export function parseScore(
   }
 }
 
+const CAPPED_OFFSET = 1000000; // Large offset to ensure capped athletes are always after finishers
+
 /**
  * Parse a time score (e.g., "6:01", "10:30", "6m01s")
- * Returns time in seconds
+ * For hybrid workouts, also accepts reps input for capped athletes (e.g., "136 reps")
+ * Returns time in seconds for finishers, or encoded value for capped
  */
 function parseTimeScore(
   input: string,
@@ -50,7 +53,7 @@ function parseTimeScore(
 ): ParsedScore {
   const normalized = input.toLowerCase().replace(/\s+/g, "");
 
-  // Try MM:SS or M:SS format
+  // Try MM:SS or M:SS format (finisher)
   const colonMatch = normalized.match(/^(\d{1,2}):(\d{2})$/);
   if (colonMatch) {
     const minutes = parseInt(colonMatch[1], 10);
@@ -70,7 +73,7 @@ function parseTimeScore(
     return validateTimeScore(totalSeconds, workout);
   }
 
-  // Try XmYYs format (e.g., "6m01s")
+  // Try XmYYs format (e.g., "6m01s") (finisher)
   const minsecMatch = normalized.match(/^(\d{1,2})m(\d{2})s?$/);
   if (minsecMatch) {
     const minutes = parseInt(minsecMatch[1], 10);
@@ -90,11 +93,61 @@ function parseTimeScore(
     return validateTimeScore(totalSeconds, workout);
   }
 
-  // Try just seconds (e.g., "361")
-  const secondsOnly = normalized.match(/^(\d+)s?$/);
+  // For hybrid workouts (time/reps), check for reps input (capped athlete)
+  if (workout.cappedScoreType === "reps" && workout.totalReps) {
+    const repsMatch = normalized.match(/^(\d+)(reps)?$/);
+    if (repsMatch) {
+      const reps = parseInt(repsMatch[1], 10);
+
+      if (reps < 0) {
+        return {
+          isValid: false,
+          error: "Reps must be 0 or greater",
+          scoreType: "time",
+          scorePrimaryRaw: 0,
+          scorePrimaryDisplay: "",
+        };
+      }
+
+      if (reps >= workout.totalReps) {
+        return {
+          isValid: false,
+          error: `Capped at ${workout.totalReps} reps. Enter a time if you finished.`,
+          scoreType: "time",
+          scorePrimaryRaw: 0,
+          scorePrimaryDisplay: "",
+        };
+      }
+
+      // Encode capped score: offset + (totalReps - reps)
+      // Higher reps = lower encoded value = better rank
+      const encodedScore = CAPPED_OFFSET + (workout.totalReps - reps);
+
+      return {
+        isValid: true,
+        scoreType: "time",
+        scorePrimaryRaw: encodedScore,
+        scorePrimaryDisplay: `${reps} reps (capped)`,
+      };
+    }
+  }
+
+  // Try just seconds (e.g., "361") - only if it's a reasonable time
+  const secondsOnly = normalized.match(/^(\d+)s$/);
   if (secondsOnly) {
     const totalSeconds = parseInt(secondsOnly[1], 10);
     return validateTimeScore(totalSeconds, workout);
+  }
+
+  // For hybrid workouts, give a more helpful error
+  if (workout.cappedScoreType === "reps") {
+    return {
+      isValid: false,
+      error: 'Enter time (e.g., "10:30") if finished, or reps (e.g., "136") if capped',
+      scoreType: "time",
+      scorePrimaryRaw: 0,
+      scorePrimaryDisplay: "",
+    };
   }
 
   return {
