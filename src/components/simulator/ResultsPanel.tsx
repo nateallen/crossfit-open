@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,8 @@ export function ResultsPanel({
   loadingOverall = false,
   className,
 }: ResultsPanelProps) {
+  const [shareStatus, setShareStatus] = useState<"idle" | "copied" | "shared">("idle");
+
   // Calculate overall stats
   const workoutsEntered = Object.values(scores).filter(
     (s) => s.parsed?.isValid
@@ -61,6 +64,67 @@ export function ResultsPanel({
       ? Math.round(((totalAthletes - estimatedOverallRank + 1) / totalAthletes) * 1000) / 10
       : null
   );
+
+  // Generate shareable text summary
+  const generateShareText = () => {
+    const lines: string[] = [];
+    lines.push(`🏋️ My ${year} CrossFit Open Results`);
+    lines.push("");
+
+    // Per-workout results
+    for (const workout of workouts) {
+      const score = scores[workout.ordinal];
+      if (score?.parsed?.isValid && score.percentile !== null) {
+        const rankStr = score.estimatedRank ? `#${score.estimatedRank.toLocaleString()}` : "";
+        lines.push(`${workout.name}: ${score.parsed.scorePrimaryDisplay} (${score.percentile}% ${rankStr})`);
+      }
+    }
+
+    lines.push("");
+
+    // Overall results
+    if (overallPercentile && estimatedOverallRank && totalAthletes) {
+      lines.push(`📊 Overall: Top ${(100 - overallPercentile).toFixed(1)}%`);
+      lines.push(`🏆 Rank: ${estimatedOverallRank.toLocaleString()} / ${totalAthletes.toLocaleString()}`);
+      lines.push(`📈 Points: ${totalPoints.toLocaleString()}`);
+    }
+
+    lines.push("");
+    lines.push("Try the simulator: crossfit-open.vercel.app");
+
+    return lines.join("\n");
+  };
+
+  const handleShare = async () => {
+    const text = generateShareText();
+
+    // Try Web Share API first (mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `My ${year} CrossFit Open Results`,
+          text,
+        });
+        setShareStatus("shared");
+        setTimeout(() => setShareStatus("idle"), 2000);
+        return;
+      } catch (err) {
+        // User cancelled or share failed, fall through to clipboard
+        if ((err as Error).name === "AbortError") {
+          return; // User cancelled, don't show anything
+        }
+      }
+    }
+
+    // Fallback to clipboard
+    try {
+      await navigator.clipboard.writeText(text);
+      setShareStatus("copied");
+      setTimeout(() => setShareStatus("idle"), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
 
   const getPercentileLabel = (p: number) => {
     return `${p}%`;
@@ -210,9 +274,28 @@ export function ResultsPanel({
       </Card>
 
       {/* Share Button */}
-      <Button className="w-full" variant="default" disabled={!allEntered}>
-        <span className="mr-2">📤</span>
-        Share Results
+      <Button
+        className="w-full"
+        variant="default"
+        disabled={!allEntered}
+        onClick={handleShare}
+      >
+        {shareStatus === "copied" ? (
+          <>
+            <span className="mr-2">✓</span>
+            Copied to Clipboard!
+          </>
+        ) : shareStatus === "shared" ? (
+          <>
+            <span className="mr-2">✓</span>
+            Shared!
+          </>
+        ) : (
+          <>
+            <span className="mr-2">📤</span>
+            Share Results
+          </>
+        )}
       </Button>
     </div>
   );
