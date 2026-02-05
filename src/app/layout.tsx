@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CrossFit Open What-If Simulator",
+  title: "One More Rep - The CrossFit Open Simulator",
   description: "Simulate your CrossFit Open scores and see your estimated percentile and rank",
 };
 
