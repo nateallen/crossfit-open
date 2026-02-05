@@ -16,8 +16,8 @@ export function Header() {
           <Image
             src="/logo.svg"
             alt="One More Rep"
-            width={140}
-            height={70}
+            width={150}
+            height={120}
             priority
           />
         </Link>
