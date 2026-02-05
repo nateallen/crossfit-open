@@ -41,16 +41,26 @@ export default function SimulatorPage() {
   const availableYears = getAvailableYears();
   const workouts = getWorkoutsForYear(year);
 
-  // Reset scores when year changes
+  // Reset scores when year or division changes
   useEffect(() => {
+    // Cancel all pending lookups
+    Object.values(pendingLookups.current).forEach((controller) => controller.abort());
+    pendingLookups.current = {};
+    if (pendingOverallLookup.current) {
+      pendingOverallLookup.current.abort();
+      pendingOverallLookup.current = null;
+    }
+
     setScores({});
     setTotalAthletes({});
     setOverallRank(null);
     setOverallPercentile(null);
+    setLoadingWorkouts(new Set());
+    setLoadingOverall(false);
     lastLookedUp.current = {};
     lastOverallPoints.current = null;
     setActiveWorkout(workouts[0]?.ordinal || null);
-  }, [year]);
+  }, [year, division]);
 
   // Look up overall rank when all workouts are entered
   useEffect(() => {
@@ -297,7 +307,7 @@ export default function SimulatorPage() {
 
               return (
                 <WorkoutCard
-                  key={workout.ordinal}
+                  key={`${year}-${division}-${workout.ordinal}`}
                   workout={workout}
                   value={score.input}
                   tiebreak={score.tiebreak}
