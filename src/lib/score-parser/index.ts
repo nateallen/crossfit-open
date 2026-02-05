@@ -312,7 +312,9 @@ export function parseScoreDisplay(
   scoreDisplay: string,
   scoreType: ScoreType
 ): number | null {
-  const normalized = scoreDisplay.toLowerCase().trim();
+  // Strip any scaled/foundations suffix (e.g., " - s" or " - f")
+  let normalized = scoreDisplay.toLowerCase().trim();
+  normalized = normalized.replace(/\s*-\s*[sf]$/, "");
 
   switch (scoreType) {
     case "time": {
@@ -395,7 +397,9 @@ export function parseHybridScoreDisplay(
   totalReps: number,
   breakdown?: string
 ): HybridScoreResult | null {
-  const normalized = scoreDisplay.toLowerCase().trim();
+  // Strip any scaled/foundations suffix (e.g., " - s" or " - f")
+  let normalized = scoreDisplay.toLowerCase().trim();
+  normalized = normalized.replace(/\s*-\s*[sf]$/, "");
 
   // Check for time format (finisher): "10:29"
   const timeMatch = normalized.match(/^(\d+):(\d{2})$/);
