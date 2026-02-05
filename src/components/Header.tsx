@@ -6,7 +6,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 export function Header() {
   return (
-    <header className="border-b bg-slate-800 dark:bg-slate-900 text-white">
+    <header className="border-b text-white" style={{ backgroundColor: "#12222a" }}>
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Spacer for balance */}
         <div className="w-10" />

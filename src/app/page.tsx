@@ -8,16 +8,19 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      {/* Gradient fade from header */}
+      <div className="h-32 -mb-32 pointer-events-none header-gradient" />
 
       {/* Hero Section */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto text-center space-y-6">
-          <h2 className="text-4xl font-bold tracking-tight">
-            See Where You Stack Up
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight flex flex-col gap-2">
+            <span className="whitespace-nowrap">Replay past Opens</span>
+            <span className="whitespace-nowrap">Compare your performance</span>
+            <span className="whitespace-nowrap">Chase the next rep</span>
           </h2>
           <p className="text-xl text-muted-foreground">
-            Enter your CrossFit Open scores and instantly see your estimated
-            percentile and rank against all competitors worldwide.
+            One More Rep lets you replay CrossFit Opens from past years and see exactly where your scores would have landed on the leaderboard. Enter your results workout by workout to view estimated rank, percentile, and how close you were to the next jump. Whether you’re analyzing a single workout or re-running an entire Open, this is a tool for athletes who love digging into the data and asking the question every CrossFitter knows well: what if I had just one more rep?
           </p>
           <div className="flex gap-4 justify-center">
             <Button asChild size="lg">

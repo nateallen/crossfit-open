@@ -42,6 +42,9 @@ function SimulatorLoading() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <div
+        className="h-32 -mb-32 pointer-events-none header-gradient"
+      />
       <div className="container mx-auto px-4 py-12 text-center text-muted-foreground">
         Loading simulator...
       </div>
@@ -290,6 +293,10 @@ function SimulatorContent() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      {/* Gradient fade from header */}
+      <div
+        className="h-32 -mb-32 pointer-events-none header-gradient"
+      />
 
       {/* Year/Division Selectors */}
       <div className="container mx-auto px-4 py-4 flex gap-4">
