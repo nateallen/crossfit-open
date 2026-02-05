@@ -1,16 +1,29 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Header() {
   return (
     <header className="border-b bg-slate-800 dark:bg-slate-900 text-white">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold hover:opacity-90">
-          CrossFit Open What-If Simulator
+      <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+        {/* Spacer for balance */}
+        <div className="w-10" />
+
+        {/* Centered logo */}
+        <Link href="/" className="hover:opacity-90">
+          <Image
+            src="/logo.svg"
+            alt="One More Rep"
+            width={180}
+            height={90}
+            priority
+          />
         </Link>
-        <div className="flex items-center gap-2">
+
+        {/* Theme toggle on right */}
+        <div className="flex items-center">
           <ThemeToggle />
         </div>
       </div>
