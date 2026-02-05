@@ -33,7 +33,6 @@ import type { WorkoutMetadata, ParsedScore } from "@/types";
 
 // Sample workout data matching the actual type
 const sampleWorkout: WorkoutMetadata = {
-  year: 2024,
   ordinal: 1,
   name: "24.1",
   description: "21-15-9 dumbbell snatches and burpees over dumbbell",
