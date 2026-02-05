@@ -1,11 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function TestTouchPage() {
   const [log, setLog] = useState<string[]>([]);
   const [count, setCount] = useState(0);
+  const [deviceInfo, setDeviceInfo] = useState({ userAgent: "", touchSupport: false });
+
+  useEffect(() => {
+    setDeviceInfo({
+      userAgent: navigator.userAgent,
+      touchSupport: "ontouchstart" in window,
+    });
+  }, []);
 
   const addLog = (msg: string) => {
     setLog((prev) => [...prev.slice(-20), `${new Date().toISOString().slice(11, 23)} ${msg}`]);
@@ -98,8 +106,8 @@ export default function TestTouchPage() {
       {/* Device info */}
       <div className="mt-4 p-4 bg-muted rounded text-xs">
         <h2 className="font-semibold mb-2">Device Info:</h2>
-        <p>User Agent: {typeof navigator !== "undefined" ? navigator.userAgent : "N/A"}</p>
-        <p>Touch Support: {typeof navigator !== "undefined" && "ontouchstart" in window ? "Yes" : "No"}</p>
+        <p>User Agent: {deviceInfo.userAgent || "Loading..."}</p>
+        <p>Touch Support: {deviceInfo.userAgent ? (deviceInfo.touchSupport ? "Yes" : "No") : "Loading..."}</p>
       </div>
     </div>
   );
