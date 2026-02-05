@@ -144,7 +144,13 @@ export function DistributionChart({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-48">
+        <div
+          className="h-48"
+          style={{
+            touchAction: "pan-y",
+            WebkitTapHighlightColor: "transparent",
+          }}
+        >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 10, right: 10, bottom: 20, left: 10 }}>
               <XAxis
