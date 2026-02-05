@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Select,
@@ -19,8 +19,7 @@ import { getWorkoutsForYear, getAvailableYears } from "@/lib/workout-metadata";
 // Currently we only support RX score entry (scaled=0)
 const USER_SCALED_TYPE = 0;
 
-function getInitialYear(searchParams: URLSearchParams, availableYears: number[]): number {
-  const yearParam = searchParams.get("year");
+function getInitialYear(yearParam: string | null, availableYears: number[]): number {
   if (yearParam) {
     const parsed = parseInt(yearParam, 10);
     if (!isNaN(parsed) && availableYears.includes(parsed)) {
@@ -30,10 +29,30 @@ function getInitialYear(searchParams: URLSearchParams, availableYears: number[])
   return availableYears[0] || 2025;
 }
 
+// Wrapper component to handle Suspense for useSearchParams
 export default function SimulatorPage() {
+  return (
+    <Suspense fallback={<SimulatorLoading />}>
+      <SimulatorContent />
+    </Suspense>
+  );
+}
+
+function SimulatorLoading() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="container mx-auto px-4 py-12 text-center text-muted-foreground">
+        Loading simulator...
+      </div>
+    </div>
+  );
+}
+
+function SimulatorContent() {
   const searchParams = useSearchParams();
   const availableYears = getAvailableYears();
-  const [year, setYear] = useState(() => getInitialYear(searchParams, availableYears));
+  const [year, setYear] = useState(() => getInitialYear(searchParams.get("year"), availableYears));
   const [division, setDivision] = useState<DivisionId>(DIVISIONS.MEN);
   const [scores, setScores] = useState<Record<number, UserScore>>({});
   const [activeWorkout, setActiveWorkout] = useState<number | null>(null);
