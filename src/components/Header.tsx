@@ -7,7 +7,7 @@ import { ThemeToggle } from "./theme-toggle";
 export function Header() {
   return (
     <header className="border-b bg-slate-800 dark:bg-slate-900 text-white">
-      <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Spacer for balance */}
         <div className="w-10" />
 
@@ -16,8 +16,8 @@ export function Header() {
           <Image
             src="/logo.svg"
             alt="One More Rep"
-            width={180}
-            height={90}
+            width={140}
+            height={70}
             priority
           />
         </Link>
