@@ -55,15 +55,18 @@ export const scores = sqliteTable("scores", {
 ]);
 
 // Precomputed percentile buckets for fast lookup
+// Stored per scaled type (0=RX, 1=Scaled, 2=Foundations)
 export const percentileBuckets = sqliteTable("percentile_buckets", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   year: integer("year").notNull(),
   division: integer("division").notNull(),
   workoutOrdinal: integer("workout_ordinal").notNull(),
-  percentile: integer("percentile").notNull(), // 1-100
+  scaled: integer("scaled").notNull().default(0), // 0=RX, 1=Scaled, 2=Foundations
+  percentile: integer("percentile").notNull(), // 1-100 (within this scaled type)
   lowerBound: integer("lower_bound").notNull(),
   upperBound: integer("upper_bound").notNull(),
-  athleteCount: integer("athlete_count"),
+  athleteCount: integer("athlete_count"), // count for this scaled type
+  totalAthleteCount: integer("total_athlete_count"), // count across all scaled types
 });
 
 // Sync job tracking

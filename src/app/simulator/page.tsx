@@ -15,19 +15,67 @@ import type { WorkoutMetadata, ParsedScore, UserScore, DivisionId } from "@/type
 import { DIVISIONS } from "@/types";
 import { getWorkoutsForYear, getAvailableYears } from "@/lib/workout-metadata";
 
+// New percentile data structure with hierarchy support
+interface WorkoutPercentileData {
+  byScaled: Record<number, Array<{
+    percentile: number;
+    lowerBound: number;
+    upperBound: number;
+  }>>;
+  counts: {
+    rx: number;
+    scaled: number;
+    foundations: number;
+    total: number;
+  };
+}
+
+type PercentileDataMap = Record<number, WorkoutPercentileData>;
+
+// Currently we only support RX score entry (scaled=0)
+const USER_SCALED_TYPE = 0;
+
+/**
+ * Calculate overall percentile for an RX score using the hierarchy:
+ * RX (best) > Scaled > Foundations (worst)
+ *
+ * An RX athlete's overall rank is their rank within RX.
+ * Overall percentile = (rank within RX) / (total athletes) * 100
+ */
+function calculateOverallPercentile(
+  percentileWithinType: number,
+  counts: WorkoutPercentileData["counts"],
+  scaledType: number
+): { overallPercentile: number; estimatedRank: number } {
+  let rankWithinTotal: number;
+
+  if (scaledType === 0) {
+    // RX: rank is just their position within RX
+    rankWithinTotal = Math.round((percentileWithinType / 100) * counts.rx);
+  } else if (scaledType === 1) {
+    // Scaled: rank = all RX + position within Scaled
+    rankWithinTotal = counts.rx + Math.round((percentileWithinType / 100) * counts.scaled);
+  } else {
+    // Foundations: rank = all RX + all Scaled + position within Foundations
+    rankWithinTotal = counts.rx + counts.scaled + Math.round((percentileWithinType / 100) * counts.foundations);
+  }
+
+  const overallPercentile = counts.total > 0
+    ? Math.round((rankWithinTotal / counts.total) * 100)
+    : 100;
+
+  return {
+    overallPercentile: Math.max(1, Math.min(100, overallPercentile)),
+    estimatedRank: rankWithinTotal,
+  };
+}
+
 export default function SimulatorPage() {
   const [year, setYear] = useState(2024);
   const [division, setDivision] = useState<DivisionId>(DIVISIONS.MEN);
   const [scores, setScores] = useState<Record<number, UserScore>>({});
   const [activeWorkout, setActiveWorkout] = useState<number | null>(null);
-  const [percentileBuckets, setPercentileBuckets] = useState<
-    Record<number, Array<{
-      percentile: number;
-      lowerBound: number;
-      upperBound: number;
-      athleteCount: number | null;
-    }>>
-  >({});
+  const [percentileData, setPercentileData] = useState<PercentileDataMap>({});
   const [totalAthletes, setTotalAthletes] = useState<number | null>(null);
 
   const availableYears = getAvailableYears();
@@ -40,13 +88,12 @@ export default function SimulatorPage() {
         const response = await fetch(`/api/percentiles/${year}/${division}`);
         if (response.ok) {
           const data = await response.json();
-          setPercentileBuckets(data.percentiles || {});
-          // Get total athletes from first bucket
-          const firstWorkoutBuckets = Object.values(data.percentiles || {})[0] as
-            | Array<{ athleteCount: number | null }>
-            | undefined;
-          if (firstWorkoutBuckets?.[0]?.athleteCount) {
-            setTotalAthletes(firstWorkoutBuckets[0].athleteCount);
+          setPercentileData(data.percentiles || {});
+
+          // Get total athletes from first workout's counts
+          const firstWorkout = Object.values(data.percentiles || {})[0] as WorkoutPercentileData | undefined;
+          if (firstWorkout?.counts?.total) {
+            setTotalAthletes(firstWorkout.counts.total);
           }
         }
       } catch (error) {
@@ -63,9 +110,9 @@ export default function SimulatorPage() {
     setActiveWorkout(workouts[0]?.ordinal || null);
   }, [year]);
 
-  // Recalculate percentiles when buckets are loaded or updated
+  // Recalculate percentiles when data is loaded or updated
   useEffect(() => {
-    if (Object.keys(percentileBuckets).length === 0) return;
+    if (Object.keys(percentileData).length === 0) return;
 
     setScores((prev) => {
       const updated = { ...prev };
@@ -73,66 +120,68 @@ export default function SimulatorPage() {
         const ordinal = parseInt(ordinalStr, 10);
         if (!score.parsed?.isValid) continue;
 
-        const workoutBuckets = percentileBuckets[ordinal] || [];
-        if (workoutBuckets.length === 0) continue;
+        const workoutData = percentileData[ordinal];
+        if (!workoutData) continue;
+
+        const rxBuckets = workoutData.byScaled[USER_SCALED_TYPE] || [];
+        if (rxBuckets.length === 0) continue;
 
         const workout = workouts.find((w) => w.ordinal === ordinal);
         const isAsc = workout?.sortDirection === "asc";
 
-        let percentile: number | null = null;
-        let estimatedRank: number | null = null;
+        let percentileWithinRx: number | null = null;
 
-        for (const bucket of workoutBuckets) {
+        // Find percentile within RX
+        for (const bucket of rxBuckets) {
           const inRange = isAsc
             ? score.parsed.scorePrimaryRaw <= bucket.upperBound
             : score.parsed.scorePrimaryRaw >= bucket.lowerBound;
 
           if (inRange) {
-            percentile = bucket.percentile;
-            if (bucket.athleteCount) {
-              estimatedRank = Math.round(
-                (bucket.percentile / 100) * bucket.athleteCount
-              );
-            }
+            percentileWithinRx = bucket.percentile;
             break;
           }
         }
 
         // Handle scores outside our data range
-        if (percentile === null && workoutBuckets.length > 0) {
-          const lastBucket = workoutBuckets[workoutBuckets.length - 1];
-          percentile = 100;
-          if (lastBucket.athleteCount) {
-            estimatedRank = lastBucket.athleteCount;
-          }
+        if (percentileWithinRx === null) {
+          percentileWithinRx = 100; // Bottom of RX
         }
+
+        // Calculate overall percentile using hierarchy
+        const { overallPercentile, estimatedRank } = calculateOverallPercentile(
+          percentileWithinRx,
+          workoutData.counts,
+          USER_SCALED_TYPE
+        );
 
         updated[ordinal] = {
           ...score,
-          percentile,
+          percentile: overallPercentile,
           estimatedRank,
         };
       }
       return updated;
     });
-  }, [percentileBuckets, workouts]);
+  }, [percentileData, workouts]);
 
   const handleScoreChange = useCallback(
     (ordinal: number, value: string, parsed: ParsedScore | null) => {
-      // Use functional update to avoid stale closure issues
       setScores((prev) => {
-        // Calculate percentile from parsed score
         let percentile: number | null = null;
         let estimatedRank: number | null = null;
 
-        const workoutBuckets = percentileBuckets[ordinal] || [];
+        const workoutData = percentileData[ordinal];
+        const rxBuckets = workoutData?.byScaled?.[USER_SCALED_TYPE] || [];
 
-        if (parsed?.isValid && workoutBuckets.length > 0) {
+        if (parsed?.isValid && rxBuckets.length > 0 && workoutData?.counts) {
           const workout = workouts.find((w) => w.ordinal === ordinal);
           const isAsc = workout?.sortDirection === "asc";
 
-          // Find the matching bucket
-          for (const bucket of workoutBuckets) {
+          let percentileWithinRx: number | null = null;
+
+          // Find percentile within RX
+          for (const bucket of rxBuckets) {
             let inRange: boolean;
 
             if (isAsc) {
@@ -140,31 +189,28 @@ export default function SimulatorPage() {
               inRange = parsed.scorePrimaryRaw <= bucket.upperBound;
             } else {
               // For reps/load (higher is better): score should be >= lowerBound
-              // Note: lowerBound is the higher score for desc sorts
               inRange = parsed.scorePrimaryRaw >= bucket.lowerBound;
             }
 
             if (inRange) {
-              percentile = bucket.percentile;
-              if (bucket.athleteCount) {
-                estimatedRank = Math.round(
-                  (bucket.percentile / 100) * bucket.athleteCount
-                );
-              }
+              percentileWithinRx = bucket.percentile;
               break;
             }
           }
 
-          // If no bucket matched, the score is outside our data range
-          // For DESC sorts, a low score means worse than our worst recorded
-          // For ASC sorts, a high score means worse than our worst recorded
-          if (percentile === null && workoutBuckets.length > 0) {
-            const lastBucket = workoutBuckets[workoutBuckets.length - 1];
-            percentile = 100; // Bottom percentile
-            if (lastBucket.athleteCount) {
-              estimatedRank = lastBucket.athleteCount;
-            }
+          // Handle scores outside our data range
+          if (percentileWithinRx === null) {
+            percentileWithinRx = 100; // Bottom of RX
           }
+
+          // Calculate overall percentile using hierarchy
+          const result = calculateOverallPercentile(
+            percentileWithinRx,
+            workoutData.counts,
+            USER_SCALED_TYPE
+          );
+          percentile = result.overallPercentile;
+          estimatedRank = result.estimatedRank;
         }
 
         return {
@@ -178,7 +224,7 @@ export default function SimulatorPage() {
         };
       });
     },
-    [percentileBuckets, workouts]
+    [percentileData, workouts]
   );
 
   return (
