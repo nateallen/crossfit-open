@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   description: "Simulate your CrossFit Open scores and see your estimated percentile and rank",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
