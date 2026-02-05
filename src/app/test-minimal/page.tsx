@@ -26,8 +26,22 @@ import {
   Cell,
 } from "recharts";
 import { Header } from "@/components/Header";
+import { WorkoutCard } from "@/components/simulator/WorkoutCard";
+import type { WorkoutMetadata, ParsedScore } from "@/types";
 
 // Progressively add components to find what breaks touch
+
+// Sample workout data matching the actual type
+const sampleWorkout: WorkoutMetadata = {
+  year: 2024,
+  ordinal: 1,
+  name: "24.1",
+  description: "21-15-9 dumbbell snatches and burpees over dumbbell",
+  detailedDescription: "For time:\n21 dumbbell snatches\n21 burpees over dumbbell\n15 dumbbell snatches\n15 burpees over dumbbell\n9 dumbbell snatches\n9 burpees over dumbbell",
+  scoreType: "time",
+  sortDirection: "asc",
+  timeCapSeconds: 900,
+};
 
 // Sample chart data
 const chartData = [
@@ -45,6 +59,12 @@ export default function TestMinimalPage() {
   const [text, setText] = useState("");
   const [year, setYear] = useState("2024");
   const [isOpen, setIsOpen] = useState(false);
+  const [workoutValue, setWorkoutValue] = useState("");
+  const [isWorkoutActive, setIsWorkoutActive] = useState(false);
+
+  const handleWorkoutChange = (value: string, parsed: ParsedScore | null) => {
+    setWorkoutValue(value);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,35 +106,17 @@ export default function TestMinimalPage() {
           <div className="lg:col-span-2 space-y-4">
             <h2 className="text-lg font-semibold">Workout Scores</h2>
 
-            {/* Card 1 with Collapsible - matches WorkoutCard structure */}
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg font-semibold">24.1</CardTitle>
-                </div>
-                <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-                  <div className="flex items-start gap-1 mt-1">
-                    <p className="text-xs text-muted-foreground flex-1">
-                      21-15-9 dumbbell snatches and burpees over dumbbell
-                    </p>
-                    <CollapsibleTrigger asChild>
-                      <button className="text-xs text-primary hover:text-primary/80 flex items-center gap-0.5 shrink-0">
-                        <span className="underline">{isOpen ? "Less" : "More"}</span>
-                        <ChevronDown className={`h-3 w-3 transition-transform ${isOpen && "rotate-180"}`} />
-                      </button>
-                    </CollapsibleTrigger>
-                  </div>
-                  <CollapsibleContent>
-                    <div className="mt-2 p-3 bg-muted/50 rounded-md border">
-                      <p className="text-xs">Full workout description...</p>
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Input placeholder="e.g., 9:02 or 9m02s" />
-              </CardContent>
-            </Card>
+            {/* ACTUAL WorkoutCard component from simulator */}
+            <WorkoutCard
+              workout={sampleWorkout}
+              value={workoutValue}
+              onChange={handleWorkoutChange}
+              percentile={null}
+              estimatedRank={null}
+              totalAthletes={null}
+              isActive={isWorkoutActive}
+              onFocus={() => setIsWorkoutActive(true)}
+            />
 
             {/* Card 2 */}
             <Card>
