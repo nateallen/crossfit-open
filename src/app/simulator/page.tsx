@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/select";
 import { WorkoutCard } from "@/components/simulator/WorkoutCard";
 import { ResultsPanel } from "@/components/simulator/ResultsPanel";
-import { DistributionChart } from "@/components/simulator/DistributionChart";
 import { Header } from "@/components/Header";
 import type { WorkoutMetadata, ParsedScore, UserScore, DivisionId } from "@/types";
 import { DIVISIONS } from "@/types";
@@ -182,9 +181,6 @@ export default function SimulatorPage() {
     [percentileBuckets, workouts]
   );
 
-  const activeWorkoutData = workouts.find((w) => w.ordinal === activeWorkout);
-  const activeScore = activeWorkout ? scores[activeWorkout] : null;
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -260,15 +256,6 @@ export default function SimulatorPage() {
               workouts={workouts}
               scores={scores}
               totalAthletes={totalAthletes}
-            />
-
-            {/* Distribution Chart */}
-            <DistributionChart
-              workout={activeWorkoutData || null}
-              userScore={activeScore?.parsed?.scorePrimaryRaw || null}
-              percentileBuckets={
-                activeWorkout ? percentileBuckets[activeWorkout] || null : null
-              }
             />
           </div>
         </div>
