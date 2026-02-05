@@ -76,12 +76,13 @@ export default function Home() {
           <h3 className="text-lg font-semibold mb-4">Supported Years</h3>
           <div className="flex gap-3 justify-center flex-wrap">
             {getAvailableYears().map((year) => (
-              <span
+              <Link
                 key={year}
-                className="px-4 py-2 bg-muted rounded-full text-sm font-medium"
+                href={`/simulator?year=${year}`}
+                className="px-4 py-2 bg-muted hover:bg-muted/80 rounded-full text-sm font-medium transition-colors"
               >
                 {year}
-              </span>
+              </Link>
             ))}
           </div>
         </div>

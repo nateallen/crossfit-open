@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -18,8 +19,21 @@ import { getWorkoutsForYear, getAvailableYears } from "@/lib/workout-metadata";
 // Currently we only support RX score entry (scaled=0)
 const USER_SCALED_TYPE = 0;
 
+function getInitialYear(searchParams: URLSearchParams, availableYears: number[]): number {
+  const yearParam = searchParams.get("year");
+  if (yearParam) {
+    const parsed = parseInt(yearParam, 10);
+    if (!isNaN(parsed) && availableYears.includes(parsed)) {
+      return parsed;
+    }
+  }
+  return availableYears[0] || 2025;
+}
+
 export default function SimulatorPage() {
-  const [year, setYear] = useState(2025);
+  const searchParams = useSearchParams();
+  const availableYears = getAvailableYears();
+  const [year, setYear] = useState(() => getInitialYear(searchParams, availableYears));
   const [division, setDivision] = useState<DivisionId>(DIVISIONS.MEN);
   const [scores, setScores] = useState<Record<number, UserScore>>({});
   const [activeWorkout, setActiveWorkout] = useState<number | null>(null);
@@ -38,7 +52,6 @@ export default function SimulatorPage() {
   const lastLookedUp = useRef<Record<number, string>>({});
   const lastOverallPoints = useRef<number | null>(null);
 
-  const availableYears = getAvailableYears();
   const workouts = getWorkoutsForYear(year);
 
   // Reset scores when year or division changes
