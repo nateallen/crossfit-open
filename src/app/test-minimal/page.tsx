@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 import { WorkoutCard } from "@/components/simulator/WorkoutCard";
+import { ResultsPanel } from "@/components/simulator/ResultsPanel";
 import type { WorkoutMetadata, ParsedScore, UserScore } from "@/types";
 
 // Progressively add components to find what breaks touch
@@ -158,18 +159,14 @@ export default function TestMinimalPage() {
             })}
           </div>
 
-          {/* Right Column - Simple placeholders (no ResultsPanel/DistributionChart) */}
+          {/* Right Column - ResultsPanel only */}
           <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Results Placeholder</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Active workout: {activeWorkout}
-                </p>
-              </CardContent>
-            </Card>
+            <ResultsPanel
+              year={year}
+              workouts={workouts}
+              scores={scores}
+              totalAthletes={50000}
+            />
 
             <Card>
               <CardHeader>
@@ -177,7 +174,7 @@ export default function TestMinimalPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Scores entered: {Object.keys(scores).length}
+                  Active workout: {activeWorkout}
                 </p>
               </CardContent>
             </Card>
