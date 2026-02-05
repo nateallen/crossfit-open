@@ -8,10 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 import { WorkoutCard } from "@/components/simulator/WorkoutCard";
-import { DistributionChart } from "@/components/simulator/DistributionChart";
-import { ResultsPanel } from "@/components/simulator/ResultsPanel";
 import type { WorkoutMetadata, ParsedScore, UserScore } from "@/types";
 
 // Progressively add components to find what breaks touch
@@ -159,22 +158,29 @@ export default function TestMinimalPage() {
             })}
           </div>
 
-          {/* Right Column - Actual ResultsPanel + DistributionChart */}
+          {/* Right Column - Simple placeholders (no ResultsPanel/DistributionChart) */}
           <div className="space-y-4">
-            <ResultsPanel
-              year={year}
-              workouts={workouts}
-              scores={scores}
-              totalAthletes={50000}
-            />
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Results Placeholder</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Active workout: {activeWorkout}
+                </p>
+              </CardContent>
+            </Card>
 
-            <DistributionChart
-              workout={activeWorkoutData || null}
-              userScore={activeScore?.parsed?.scorePrimaryRaw || null}
-              percentileBuckets={
-                activeWorkout ? percentileBuckets[activeWorkout] || null : null
-              }
-            />
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Chart Placeholder</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Scores entered: {Object.keys(scores).length}
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
