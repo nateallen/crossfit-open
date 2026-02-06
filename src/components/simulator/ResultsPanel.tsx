@@ -90,7 +90,7 @@ export function ResultsPanel({
     }
 
     lines.push("");
-    lines.push("Try the simulator: crossfit-open.vercel.app");
+    lines.push("Try the simulator: onemorerep.nathanallen.com");
 
     return lines.join("\n");
   };

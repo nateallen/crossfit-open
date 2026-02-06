@@ -19,6 +19,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "One More Rep - Replay past Opens",
   description: "Simulate your CrossFit Open scores and see your estimated percentile and rank",
+  metadataBase: new URL("https://onemorerep.nathanallen.com"),
+  openGraph: {
+    title: "One More Rep - Replay past Opens",
+    description: "Simulate your CrossFit Open scores and see your estimated percentile and rank",
+    url: "https://onemorerep.nathanallen.com",
+    siteName: "One More Rep",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "One More Rep - Replay past Opens",
+    description: "Simulate your CrossFit Open scores and see your estimated percentile and rank",
+  },
 };
 
 export default function RootLayout({
