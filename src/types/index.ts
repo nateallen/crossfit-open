@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 // CrossFit Leaderboard API Response Types
 
 export interface LeaderboardResponse {

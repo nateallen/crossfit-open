@@ -217,6 +217,16 @@ function SimulatorContent() {
           },
         }));
 
+        // Track successful lookups in Google Analytics
+        if (result.success && typeof window !== "undefined" && window.gtag) {
+          window.gtag("event", "score_lookup", {
+            year,
+            division,
+            workout_ordinal: ordinal,
+            percentile: result.percentile,
+          });
+        }
+
         // Update total athletes for this workout
         if (result.totalCompetitors) {
           setTotalAthletes((prev) => ({
