@@ -62,38 +62,63 @@ export function WorkoutCard({
   const lastReportedValue = useRef(value);
   const lastReportedTiebreak = useRef(tiebreak);
 
+  // Stable ref for onChange to prevent debounce resets on parent re-renders
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  // Track debounce timer for flushing on blur
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Core lookup trigger logic (shared by debounce and blur flush)
+  const triggerOnChange = useCallback(() => {
+    const valueChanged = localValue !== lastReportedValue.current;
+    const tiebreakChanged = tiebreakValue !== lastReportedTiebreak.current;
+
+    if (!valueChanged && !tiebreakChanged) {
+      return;
+    }
+
+    lastReportedValue.current = localValue;
+    lastReportedTiebreak.current = tiebreakValue;
+
+    if (localValue.trim()) {
+      const result = parseScore(localValue, effectiveWorkout);
+      // Add isFinisher flag for hybrid workouts
+      if (isHybrid && result.isValid) {
+        result.isFinisher = didFinish === true;
+      }
+      setParsed(result);
+      // Pass tiebreak only if it's a valid format (M:SS)
+      const validTiebreak = tiebreakValue.match(/^\d+:\d{2}$/) ? tiebreakValue : undefined;
+      onChangeRef.current(localValue, result.isValid ? result : null, validTiebreak);
+    } else {
+      setParsed(null);
+      onChangeRef.current(localValue, null, undefined);
+    }
+  }, [localValue, tiebreakValue, effectiveWorkout, isHybrid, didFinish]);
+
   // Parse on value change with debounce
   useEffect(() => {
-    const timer = setTimeout(() => {
-      // Only call onChange if the value or tiebreak actually changed
-      const valueChanged = localValue !== lastReportedValue.current;
-      const tiebreakChanged = tiebreakValue !== lastReportedTiebreak.current;
+    debounceTimer.current = setTimeout(() => {
+      debounceTimer.current = null;
+      triggerOnChange();
+    }, 500);
 
-      if (!valueChanged && !tiebreakChanged) {
-        return;
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
       }
+    };
+  }, [triggerOnChange]);
 
-      lastReportedValue.current = localValue;
-      lastReportedTiebreak.current = tiebreakValue;
-
-      if (localValue.trim()) {
-        const result = parseScore(localValue, effectiveWorkout);
-        // Add isFinisher flag for hybrid workouts
-        if (isHybrid && result.isValid) {
-          result.isFinisher = didFinish === true;
-        }
-        setParsed(result);
-        // Pass tiebreak only if it's a valid format (M:SS)
-        const validTiebreak = tiebreakValue.match(/^\d+:\d{2}$/) ? tiebreakValue : undefined;
-        onChange(localValue, result.isValid ? result : null, validTiebreak);
-      } else {
-        setParsed(null);
-        onChange(localValue, null, undefined);
-      }
-    }, 500); // Increased debounce to 500ms for API calls
-
-    return () => clearTimeout(timer);
-  }, [localValue, tiebreakValue, effectiveWorkout, onChange, isHybrid, didFinish]);
+  // Flush pending lookup immediately on blur
+  const handleBlur = useCallback(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+      debounceTimer.current = null;
+      triggerOnChange();
+    }
+  }, [triggerOnChange]);
 
   // Reset finish status and tiebreak when workout changes
   useEffect(() => {
@@ -277,6 +302,7 @@ export function WorkoutCard({
               value={localValue}
               onChange={(e) => setLocalValue(e.target.value)}
               onFocus={onFocus}
+              onBlur={handleBlur}
               placeholder={getPlaceholder()}
               className={cn(
                 "flex-1",
@@ -302,6 +328,7 @@ export function WorkoutCard({
             <Input
               value={tiebreakValue}
               onChange={(e) => setTiebreakValue(e.target.value)}
+              onBlur={handleBlur}
               placeholder="e.g., 6:45"
               className="text-sm"
             />

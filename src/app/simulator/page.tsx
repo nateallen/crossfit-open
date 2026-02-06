@@ -78,16 +78,14 @@ function SimulatorContent() {
 
   const workouts = getWorkoutsForYear(year);
 
-  // Reset scores when year or division changes
-  useEffect(() => {
-    // Cancel all pending lookups
+  // Clear all scores and cancel pending lookups
+  const clearState = useCallback(() => {
     Object.values(pendingLookups.current).forEach((controller) => controller.abort());
     pendingLookups.current = {};
     if (pendingOverallLookup.current) {
       pendingOverallLookup.current.abort();
       pendingOverallLookup.current = null;
     }
-
     setScores({});
     setTotalAthletes({});
     setOverallRank(null);
@@ -96,8 +94,7 @@ function SimulatorContent() {
     setLoadingOverall(false);
     lastLookedUp.current = {};
     lastOverallPoints.current = null;
-    setActiveWorkout(workouts[0]?.ordinal || null);
-  }, [year, division]);
+  }, []);
 
   // Look up overall rank when all workouts are entered
   useEffect(() => {
@@ -304,7 +301,13 @@ function SimulatorContent() {
       <div className="container mx-auto px-4 py-4 flex gap-4">
         <Select
           value={String(year)}
-          onValueChange={(val) => setYear(parseInt(val, 10))}
+          onValueChange={(val) => {
+            clearState();
+            const newYear = parseInt(val, 10);
+            setYear(newYear);
+            const newWorkouts = getWorkoutsForYear(newYear);
+            setActiveWorkout(newWorkouts[0]?.ordinal || null);
+          }}
         >
           <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Select year" />
@@ -320,7 +323,11 @@ function SimulatorContent() {
 
         <Select
           value={String(division)}
-          onValueChange={(val) => setDivision(parseInt(val, 10) as DivisionId)}
+          onValueChange={(val) => {
+            clearState();
+            setDivision(parseInt(val, 10) as DivisionId);
+            setActiveWorkout(workouts[0]?.ordinal || null);
+          }}
         >
           <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Select division" />
