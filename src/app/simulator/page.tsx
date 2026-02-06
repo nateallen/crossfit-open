@@ -329,12 +329,26 @@ function SimulatorContent() {
             setActiveWorkout(workouts[0]?.ordinal || null);
           }}
         >
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select division" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={String(DIVISIONS.MEN)}>Men (RX)</SelectItem>
             <SelectItem value={String(DIVISIONS.WOMEN)}>Women (RX)</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_35_39)}>Men 35-39</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_35_39)}>Women 35-39</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_40_44)}>Men 40-44</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_40_44)}>Women 40-44</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_45_49)}>Men 45-49</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_45_49)}>Women 45-49</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_50_54)}>Men 50-54</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_50_54)}>Women 50-54</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_55_59)}>Men 55-59</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_55_59)}>Women 55-59</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_60_PLUS)}>Men 60+</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_60_PLUS)}>Women 60+</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_65_PLUS)}>Men 65+</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_65_PLUS)}>Women 65+</SelectItem>
           </SelectContent>
         </Select>
       </div>
