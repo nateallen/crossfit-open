@@ -12,6 +12,7 @@ import {
 import { WorkoutCard } from "@/components/simulator/WorkoutCard";
 import { ResultsPanel } from "@/components/simulator/ResultsPanel";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import type { ParsedScore, UserScore, DivisionId } from "@/types";
 import { DIVISIONS } from "@/types";
 import { getWorkoutsForYear, getAvailableYears } from "@/lib/workout-metadata";
@@ -40,14 +41,15 @@ export default function SimulatorPage() {
 
 function SimulatorLoading() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <div
         className="h-32 -mb-32 pointer-events-none header-gradient"
       />
-      <div className="container mx-auto px-4 py-12 text-center text-muted-foreground">
+      <div className="container mx-auto px-4 py-12 text-center text-muted-foreground flex-1">
         Loading simulator...
       </div>
+      <Footer />
     </div>
   );
 }
@@ -291,7 +293,7 @@ function SimulatorContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
       {/* Gradient fade from header */}
       <div
@@ -331,7 +333,7 @@ function SimulatorContent() {
       </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 pb-8">
+      <main className="container mx-auto px-4 pb-8 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Workout Cards */}
           <div className="lg:col-span-2 space-y-4">
@@ -378,6 +380,7 @@ function SimulatorContent() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

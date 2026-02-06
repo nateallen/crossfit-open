@@ -2,17 +2,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { getAvailableYears } from "@/lib/workout-metadata";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
       {/* Gradient fade from header */}
       <div className="h-32 -mb-32 pointer-events-none header-gradient" />
 
       {/* Hero Section */}
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-12 flex-1">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight flex flex-col gap-2">
             <span className="whitespace-nowrap">Replay past Opens</span>
@@ -90,6 +91,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
