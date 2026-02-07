@@ -114,9 +114,11 @@ export interface WorkoutMetadata {
   /** Path to official scorecard PDF */
   scorecardPdf?: string;
   /** YouTube URL for workout announcement video */
-  announcementVideo?: string;
+  announcementVideo?: string | null;
   /** Athlete who won the workout in the announcement video */
   announcementWinner?: string;
+  /** Athletes who competed in the announcement throwdown */
+  announcementMatchup?: string;
 }
 
 // Division mapping
