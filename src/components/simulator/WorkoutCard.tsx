@@ -283,7 +283,6 @@ export function WorkoutCard({
           {[
             { value: 0, label: "RX" },
             { value: 1, label: "Scaled" },
-            { value: 2, label: "Foundations" },
           ].map((option) => (
             <button
               key={option.value}
@@ -374,18 +373,14 @@ export function WorkoutCard({
         )}
 
         {/* Rank Estimate */}
-        {isLoading ? (
-          <p className="text-sm text-muted-foreground animate-pulse">
-            Looking up percentile...
-          </p>
-        ) : estimatedRank !== null && totalAthletes !== null ? (
+        {!isLoading && estimatedRank !== null && totalAthletes !== null ? (
           <p className="text-sm text-muted-foreground">
             ≈ {formatRank(estimatedRank, totalAthletes)}
           </p>
         ) : null}
 
         {/* Percentile Bar */}
-        <PercentileBar percentile={isLoading ? null : percentile} />
+        <PercentileBar percentile={percentile} isLoading={isLoading} />
       </CardContent>
     </Card>
   );

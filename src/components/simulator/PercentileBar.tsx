@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface PercentileBarProps {
   percentile: number | null;
+  isLoading?: boolean;
   className?: string;
 }
 
@@ -12,12 +13,22 @@ interface PercentileBarProps {
  * Bar fills from left (worst) to right (best)
  * Higher percentile number = better performance (beat more athletes)
  */
-export function PercentileBar({ percentile, className }: PercentileBarProps) {
+export function PercentileBar({ percentile, isLoading = false, className }: PercentileBarProps) {
+  if (isLoading) {
+    return (
+      <div className={cn("space-y-1", className)}>
+        <div className="h-2.5 rounded-full bg-muted overflow-hidden">
+          <div className="h-full w-full bg-muted-foreground/20 animate-pulse rounded-full" />
+        </div>
+        <p className="text-xs text-muted-foreground animate-pulse">Looking up percentile...</p>
+      </div>
+    );
+  }
+
   if (percentile === null) {
     return (
       <div className={cn("space-y-1", className)}>
         <div className="h-2.5 rounded-full bg-muted" />
-        <p className="text-xs text-muted-foreground">No score entered</p>
       </div>
     );
   }
@@ -38,7 +49,7 @@ export function PercentileBar({ percentile, className }: PercentileBarProps) {
 
   return (
     <div className={cn("space-y-1", className)}>
-      {/* Bar: worst (left/empty) to best (right/filled) */}
+      {/* Bar fills from left to right based on percentile */}
       <div className="relative h-2.5 rounded-full bg-muted overflow-hidden">
         <div
           className={cn(
@@ -48,13 +59,11 @@ export function PercentileBar({ percentile, className }: PercentileBarProps) {
           style={{ width: `${fillPercent}%` }}
         />
       </div>
-      {/* Labels */}
-      <div className="flex justify-between text-xs">
-        <span className="text-muted-foreground">Worst</span>
+      {/* Label */}
+      <div className="flex justify-end text-xs">
         <span className={cn("font-medium", getBarColor(percentile).replace("bg-", "text-"))}>
           {percentile}%
         </span>
-        <span className="text-muted-foreground">Best</span>
       </div>
     </div>
   );
