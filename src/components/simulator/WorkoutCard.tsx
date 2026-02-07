@@ -199,23 +199,8 @@ export function WorkoutCard({
             {getScoreTypeLabel()}
           </Badge>
         </div>
-        <div className="flex items-center gap-3 mt-1">
-          {(workout.detailedDescription || workout.description) && (
-            <button
-              onClick={() => setIsDetailsOpen(!isDetailsOpen)}
-              className="text-xs text-primary hover:text-primary/80 flex items-center gap-0.5 transition-colors"
-            >
-              <span className="underline underline-offset-2">
-                {isDetailsOpen ? "Hide description" : "Description"}
-              </span>
-              <ChevronDown
-                className={cn(
-                  "h-3 w-3 transition-transform duration-200",
-                  isDetailsOpen && "rotate-180"
-                )}
-              />
-            </button>
-          )}
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center gap-3">
           {workout.scorecardPdf && (
             <a
               href={workout.scorecardPdf}
@@ -265,6 +250,23 @@ export function WorkoutCard({
               </svg>
               Video
             </a>
+          )}
+          </div>
+          {(workout.detailedDescription || workout.description) && (
+            <button
+              onClick={() => setIsDetailsOpen(!isDetailsOpen)}
+              className="text-xs text-primary hover:text-primary/80 flex items-center gap-0.5 transition-colors"
+            >
+              <span className="underline underline-offset-2">
+                {isDetailsOpen ? "Hide Description" : "Description"}
+              </span>
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 transition-transform duration-200",
+                  isDetailsOpen && "rotate-180"
+                )}
+              />
+            </button>
           )}
         </div>
         {isDetailsOpen && (workout.detailedDescription || workout.description) && (
