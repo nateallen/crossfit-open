@@ -115,6 +115,8 @@ export interface WorkoutMetadata {
   scorecardPdf?: string;
   /** YouTube URL for workout announcement video */
   announcementVideo?: string;
+  /** Athlete who won the workout in the announcement video */
+  announcementWinner?: string;
 }
 
 // Division mapping

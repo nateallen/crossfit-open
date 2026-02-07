@@ -18,6 +18,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds and reps as possible in 9 minutes of:\n15 toes-to-bars\n10 deadlifts (115/75 lb)\n5 snatches (115/75 lb)",
       scorecardPdf: "/scorecards/2015/15.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=ZM1yBGo94T0&t=888",
+      announcementWinner: "Mat Fraser",
     },
     {
       ordinal: 2,
@@ -40,6 +42,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Every 3 minutes for as long as possible complete:\n\nFrom 0:00-3:00: 2 rounds of 10 overhead squats (95/65 lb) + 10 chest-to-bar pull-ups\nFrom 3:00-6:00: 2 rounds of 12 overhead squats + 12 chest-to-bar pull-ups\nFrom 6:00-9:00: 2 rounds of 14 overhead squats + 14 chest-to-bar pull-ups\n\nContinue adding 2 reps each segment until you fail to complete 2 rounds within the 3-minute window.",
       scorecardPdf: "/scorecards/2015/15.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=L8v6Zp_L1pY&t=735",
+      announcementWinner: "Michele Letendre",
     },
     {
       ordinal: 4,
@@ -57,6 +61,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds and reps as possible in 14 minutes of:\n7 muscle-ups\n50 wall-ball shots\n100 double-unders\n\nMen use 20-lb ball to 10-ft target\nWomen use 14-lb ball to 9-ft target",
       scorecardPdf: "/scorecards/2015/15.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=ZSm7uCBy1GM&t=410",
+      announcementWinner: "Julie Foucher",
     },
     {
       ordinal: 5,
@@ -73,6 +79,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many reps as possible in 8 minutes of:\n3 handstand push-ups, 3 cleans\n6 handstand push-ups, 3 cleans\n9 handstand push-ups, 3 cleans\n12 handstand push-ups, 6 cleans\n15 handstand push-ups, 6 cleans\n18 handstand push-ups, 6 cleans\n21 handstand push-ups, 9 cleans\n...etc.\n\nAdd 3 reps to HSPU each round, add 3 reps to cleans every 3 rounds.\n\nMen clean 185 lb\nWomen clean 125 lb",
       scorecardPdf: "/scorecards/2015/15.4.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=2W-lXUaW67Q&t=670",
+      announcementWinner: "Scott Panchik",
     },
     {
       ordinal: 6,
@@ -84,6 +92,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "27-21-15-9 reps for time of:\nRow (calories)\nThrusters\n\nMen use 95 lb\nWomen use 65 lb\n\nNo time cap. Score is time to complete all 144 reps.",
       scorecardPdf: "/scorecards/2015/15.5.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=TCHjsbOcv84&t=586",
+      announcementWinner: "Mat Fraser",
     },
   ],
   2016: [
@@ -99,6 +109,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds and reps as possible in 20 minutes of:\n25-ft overhead walking lunge\n8 burpees\n25-ft overhead walking lunge\n8 chest-to-bar pull-ups\n\nMen lunge 95 lb\nWomen lunge 65 lb",
       scorecardPdf: "/scorecards/2016/16.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=ZiFsh57xYUs&t=1035",
+      announcementWinner: "Emily Abbott",
     },
     {
       ordinal: 2,
@@ -117,6 +129,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Beginning on a 4-minute clock, complete as many reps as possible of:\n25 toes-to-bars\n50 double-unders\n15 squat cleans (135/85 lb)\n\nIf completed before 4 min, add 4 min to clock and proceed to:\n25 T2B, 50 DU, 13 squat cleans (185/115 lb)\n\nIf completed before 8 min, proceed to:\n25 T2B, 50 DU, 11 squat cleans (225/145 lb)\n\nIf completed before 12 min, proceed to:\n25 T2B, 50 DU, 9 squat cleans (275/175 lb)\n\nIf completed before 16 min, proceed to:\n25 T2B, 50 DU, 7 squat cleans (315/205 lb)\n\nStop at 20 minutes.",
       scorecardPdf: "/scorecards/2016/16.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=nEtYn3a1DT0&t=1120",
+      announcementWinner: "Björgvin Guðmundsson",
     },
     {
       ordinal: 3,
@@ -133,6 +147,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds and reps as possible in 7 minutes of:\n10 power snatches\n3 bar muscle-ups\n\nMen use 75 lb\nWomen use 55 lb\n\nTiebreak: Time at completion of each round.",
       scorecardPdf: "/scorecards/2016/16.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=RoV9D3p_70U&t=925",
+      announcementWinner: "Nicholas Paladino",
     },
     {
       ordinal: 4,
@@ -149,6 +165,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds and reps as possible in 13 minutes of:\n55 deadlifts\n55 wall-ball shots\n55-calorie row\n55 handstand push-ups\n\nMen deadlift 225 lb and throw 20-lb ball to 10-ft target\nWomen deadlift 155 lb and throw 14-lb ball to 9-ft target\n\nTiebreak: Time at completion of 55-cal row.",
       scorecardPdf: "/scorecards/2016/16.4.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=K58KWKS7FNY&t=970",
+      announcementWinner: "Sara Sigmundsdottir",
     },
     {
       ordinal: 5,
@@ -160,6 +178,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "21-18-15-12-9-6-3 reps for time of:\nThrusters\nBar-facing burpees\n\nMen use 95 lb\nWomen use 65 lb\n\nNo time cap. Total of 168 reps.",
       scorecardPdf: "/scorecards/2016/16.5.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=RVoPSpA4RO8&t=165",
+      announcementWinner: "Rich Froning",
     },
   ],
   2017: [
@@ -180,6 +200,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n10 dumbbell snatches\n15 burpee box jump-overs\n20 dumbbell snatches\n15 burpee box jump-overs\n30 dumbbell snatches\n15 burpee box jump-overs\n40 dumbbell snatches\n15 burpee box jump-overs\n50 dumbbell snatches\n15 burpee box jump-overs\n\nMen use 50-lb dumbbell and 24-in box\nWomen use 35-lb dumbbell and 20-in box\n\nTime cap: 20 minutes",
       scorecardPdf: "/scorecards/2017/17.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=fTbFitCsA_4&t=930",
+      announcementWinner: "Patrick Vellner",
     },
     {
       ordinal: 2,
@@ -197,6 +219,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds and reps as possible in 12 minutes of:\n\n2 rounds of:\n  50-ft weighted walking lunge\n  16 toes-to-bars\n  8 dumbbell power cleans\n\nThen, 2 rounds of:\n  50-ft weighted walking lunge\n  16 bar muscle-ups\n  8 dumbbell power cleans\n\nEtc., alternating between toes-to-bars and bar muscle-ups every 2 rounds.\n\nMen use 50-lb dumbbells\nWomen use 35-lb dumbbells",
       scorecardPdf: "/scorecards/2017/17.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=Y6fH2-7F_0w&t=1005",
+      announcementWinner: "Kari Pearce",
     },
     {
       ordinal: 3,
@@ -215,6 +239,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Prior to 8:00, complete:\n3 rounds of: 6 chest-to-bar pull-ups, 6 squat snatches (95/65 lb)\nThen, 3 rounds of: 7 chest-to-bar pull-ups, 5 squat snatches (135/95 lb)\n\n*Prior to 12:00, complete 3 rounds of:\n8 chest-to-bar pull-ups, 4 squat snatches (185/135 lb)\n\n*Prior to 16:00, complete 3 rounds of:\n9 chest-to-bar pull-ups, 3 squat snatches (225/155 lb)\n\n*Prior to 20:00, complete 3 rounds of:\n10 chest-to-bar pull-ups, 2 squat snatches (245/175 lb)\n\nPrior to 24:00, complete 3 rounds of:\n11 chest-to-bar pull-ups, 1 squat snatch (265/185 lb)\n\n*If all reps are completed, time cap extends by 4 minutes.",
       scorecardPdf: "/scorecards/2017/17.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=39-rT9wG13o&t=1090",
+      announcementWinner: "Mat Fraser",
     },
     {
       ordinal: 4,
@@ -232,6 +258,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds and reps as possible in 13 minutes of:\n55 deadlifts\n55 wall-ball shots\n55-calorie row\n55 handstand push-ups\n\nMen deadlift 225 lb and throw 20-lb ball to 10-ft target\nWomen deadlift 155 lb and throw 14-lb ball to 9-ft target\n\nTiebreak: Time at completion of each set of 55.",
       scorecardPdf: "/scorecards/2017/17.4.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=qXAJk8lONe8&t=860",
+      announcementWinner: "Brooke Wells",
     },
     {
       ordinal: 5,
@@ -245,6 +273,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "10 rounds for time of:\n9 thrusters\n35 double-unders\n\nMen use 95 lb\nWomen use 65 lb\n\nTime cap: 40 minutes",
       scorecardPdf: "/scorecards/2017/17.5.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=q8yY9e9Xq0Y&t=1190",
+      announcementWinner: "Sara Sigmundsdottir",
     },
   ],
   2018: [
@@ -259,6 +289,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds as possible in 20 minutes of:\n8 toes-to-bars\n10 dumbbell hang clean and jerks (5 each arm)\n14/12-calorie row (men/women)\n\nMen use 50-lb dumbbell\nWomen use 35-lb dumbbell",
       scorecardPdf: "/scorecards/2018/18.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=mcpU1ZOF_iY&t=1145",
+      announcementWinner: "Sam Briggs",
     },
     {
       ordinal: 2,
@@ -272,6 +304,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "1-2-3-4-5-6-7-8-9-10 reps for time of:\nDumbbell squats\nBar-facing burpees\n\nMen use 50-lb dumbbells\nWomen use 35-lb dumbbells\n\nTime cap: 12 minutes (to complete 18.2 and 18.2a)",
       scorecardPdf: "/scorecards/2018/18.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=O3-m93yW2_I&t=1030",
+      announcementWinner: "Noah Ohlsen",
     },
     {
       ordinal: 3,
@@ -283,6 +317,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "1-rep-max clean\n\nNote: Performed with remaining time after completing 18.2. If 18.2 is not completed in under 12 minutes, athletes will not have a score for 18.2a. Tiebreak: faster 18.2 time ranks higher.",
       scorecardPdf: "/scorecards/2018/18.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=O3-m93yW2_I&t=1030",
+      announcementWinner: "Noah Ohlsen",
     },
     {
       ordinal: 4,
@@ -301,6 +337,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "2 rounds for time of:\n100 double-unders\n20 overhead squats\n100 double-unders\n12 ring muscle-ups\n100 double-unders\n20 dumbbell snatches\n100 double-unders\n12 bar muscle-ups\n\nMen perform 115-lb OHS, 50-lb DB snatches\nWomen perform 80-lb OHS, 35-lb DB snatches\n\nTime cap: 14 minutes",
       scorecardPdf: "/scorecards/2018/18.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=YgVfR-S2pY0&t=1135",
+      announcementWinner: "Kyle Kasperbauer",
     },
     {
       ordinal: 5,
@@ -319,6 +357,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n21 deadlifts (225/155 lb)\n21 handstand push-ups\n15 deadlifts (225/155 lb)\n15 handstand push-ups\n9 deadlifts (225/155 lb)\n9 handstand push-ups\n21 deadlifts (315/205 lb)\n50-ft handstand walk\n15 deadlifts (315/205 lb)\n50-ft handstand walk\n9 deadlifts (315/205 lb)\n50-ft handstand walk\n\nTime cap: 9 minutes\n\nHandstand walk: each 5-ft section = 1 rep",
       scorecardPdf: "/scorecards/2018/18.4.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=ZKxgp3zBwU0&t=1060",
+      announcementWinner: "Scott Panchik",
     },
     {
       ordinal: 6,
@@ -330,6 +370,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many reps as possible in 7 minutes of:\n3 thrusters\n3 chest-to-bar pull-ups\n6 thrusters\n6 chest-to-bar pull-ups\n9 thrusters\n9 chest-to-bar pull-ups\n12 thrusters\n12 chest-to-bar pull-ups\n15 thrusters\n15 chest-to-bar pull-ups\n18 thrusters\n18 chest-to-bar pull-ups\nEtc.\n\nMen use 100 lb\nWomen use 65 lb\n\nTime cap: 7 minutes",
       scorecardPdf: "/scorecards/2018/18.5.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=P8zO4M7x0S8&t=1215",
+      announcementWinner: "Annie Thorisdottir",
     },
   ],
   2019: [
@@ -344,6 +386,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds as possible in 15 minutes of:\n19 wall-ball shots\n19-cal. row\n\nMen throw 20-lb ball to 10-ft target\nWomen throw 14-lb ball to 9-ft target\n\nTime cap: 15 minutes\n\nNo tiebreak for this workout.",
       scorecardPdf: "/scorecards/2019/19.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=kh0SaQQUyQM&t=1245",
+      announcementWinner: "Vitor Caetano",
     },
     {
       ordinal: 2,
@@ -362,6 +406,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Beginning on an 8-minute clock, complete as many reps as possible of:\n25 toes-to-bars\n50 double-unders\n15 squat cleans (135/85 lb)\n25 toes-to-bars\n50 double-unders\n13 squat cleans (185/115 lb)\n\nIf completed before 8 minutes, add 4 minutes to the clock and proceed to:\n25 toes-to-bars\n50 double-unders\n11 squat cleans (225/145 lb)\n\nIf completed before 12 minutes, add 4 minutes to the clock and proceed to:\n25 toes-to-bars\n50 double-unders\n9 squat cleans (275/175 lb)\n\nIf completed before 16 minutes, add 4 minutes to the clock and proceed to:\n25 toes-to-bars\n50 double-unders\n7 squat cleans (315/205 lb)\n\nStop at 20 minutes.\n\nTiebreak: Time after completing each set of double-unders.",
       scorecardPdf: "/scorecards/2019/19.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=VpXhMUn_12g&t=1070",
+      announcementWinner: "Annie Thorisdottir",
     },
     {
       ordinal: 3,
@@ -380,6 +426,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n200-ft dumbbell overhead lunge\n50 dumbbell box step-ups\n50 strict handstand push-ups\n200-ft handstand walk\n\nMen use 50-lb dumbbell, 24-in box\nWomen use 35-lb dumbbell, 20-in box\n\nTime cap: 10 minutes\n\nTiebreaks: After final box step-up and after final handstand push-up.\n\nEach 5-ft section = 1 rep for lunges and handstand walk.",
       scorecardPdf: "/scorecards/2019/19.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=f7G4v6Fm60w&t=1155",
+      announcementWinner: "Sam Briggs",
     },
     {
       ordinal: 4,
@@ -398,6 +446,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For total time:\n3 rounds of:\n10 snatches\n12 bar-facing burpees\n\nThen, rest 3 minutes before continuing with:\n\n3 rounds of:\n10 bar muscle-ups\n12 bar-facing burpees\n\nMen snatch 95 lb\nWomen snatch 65 lb\n\nTime cap: 12 minutes (including 3-minute rest period)\n\nTiebreak: Time after completing final bar-facing burpee in first couplet.",
       scorecardPdf: "/scorecards/2019/19.4.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=S3-x67_7_uM&t=1090",
+      announcementWinner: "Mat Fraser",
     },
     {
       ordinal: 5,
@@ -411,6 +461,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "33-27-21-15-9 reps for time of:\nThrusters\nChest-to-bar pull-ups\n\nMen use 95 lb\nWomen use 65 lb\n\nTime cap: 20 minutes\n\nNo tiebreak for this workout.",
       scorecardPdf: "/scorecards/2019/19.5.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=G2z3eQ6k7o0&t=1280",
+      announcementWinner: "Mat Fraser",
     },
   ],
   2020: [
@@ -427,6 +479,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "10 rounds for time of:\n8 ground-to-overheads\n10 bar-facing burpees\n\nMen use 95 lb\nWomen use 65 lb\n\nTime cap: 15 minutes\n\nNo tiebreak for this workout.",
       scorecardPdf: "/scorecards/2020/20.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=KPrE_oOQG1c&t=905",
+      announcementWinner: "Rich Froning",
     },
     {
       ordinal: 2,
@@ -440,6 +494,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds as possible in 20 minutes of:\n4 dumbbell thrusters\n6 toes-to-bars\n24 double-unders\n\nMen use 50-lb dumbbells\nWomen use 35-lb dumbbells\n\nNo tiebreak for this workout.",
       scorecardPdf: "/scorecards/2020/20.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=u88PntHj_u8&t=655",
+      announcementWinner: "Matt McLeod",
     },
     {
       ordinal: 3,
@@ -458,6 +514,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n21 deadlifts (225/155 lb)\n21 handstand push-ups\n15 deadlifts (225/155 lb)\n15 handstand push-ups\n9 deadlifts (225/155 lb)\n9 handstand push-ups\n21 deadlifts (315/205 lb)\n50-ft handstand walk\n15 deadlifts (315/205 lb)\n50-ft handstand walk\n9 deadlifts (315/205 lb)\n50-ft handstand walk\n\nTime cap: 9 minutes\n\nEach 5-ft section of handstand walk = 1 rep.\n\nTiebreak: Time after completing each set of deadlifts.",
       scorecardPdf: "/scorecards/2020/20.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=pW60m4f4p0K&t=690",
+      announcementWinner: "Annie Thorisdottir",
     },
     {
       ordinal: 4,
@@ -477,6 +535,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n30 box jumps\n15 clean and jerks (95/65 lb)\n30 box jumps\n15 clean and jerks (135/85 lb)\n30 box jumps\n10 clean and jerks (185/115 lb)\n30 single-leg squats\n10 clean and jerks (225/145 lb)\n30 single-leg squats\n5 clean and jerks (275/175 lb)\n30 single-leg squats\n5 clean and jerks (315/205 lb)\n\nMen 24-in box\nWomen 20-in box\n\nTime cap: 20 minutes\n\nTiebreak: Time after each set of box jumps or single-leg squats.",
       scorecardPdf: "/scorecards/2020/20.4.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=L590H1uFkG4&t=615",
+      announcementWinner: "Ben Smith",
     },
     {
       ordinal: 5,
@@ -496,6 +556,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time, partitioned any way:\n40 muscle-ups\n80-cal. row\n120 wall-ball shots\n\nMen use 20-lb ball to 10-ft target\nWomen use 14-lb ball to 9-ft target\n\nTime cap: 20 minutes\n\nAthletes may perform movements in any order. Reps can be divided any way.\n\nTiebreak: Time when 80-cal row and 120 wall-ball shots are completed.",
       scorecardPdf: "/scorecards/2020/20.5.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=oas864L8ekE&t=740",
+      announcementWinner: "Annie Thorisdottir",
     },
   ],
   2021: [
@@ -516,6 +578,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n1 wall walk\n10 double-unders\n3 wall walks\n30 double-unders\n6 wall walks\n60 double-unders\n9 wall walks\n90 double-unders\n15 wall walks\n150 double-unders\n21 wall walks\n210 double-unders\n\nTime cap: 15 minutes\n\nTiebreak: Record time at end of each set of double-unders.",
       scorecardPdf: "/scorecards/2021/21.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=kNCc9Ajipjo&t=1483",
+      announcementWinner: "Kristi Eramo O'Connell",
     },
     {
       ordinal: 2,
@@ -534,6 +598,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Repeat of 17.1\n\nFor time:\n10 dumbbell snatches\n15 burpee box jump-overs\n20 dumbbell snatches\n15 burpee box jump-overs\n30 dumbbell snatches\n15 burpee box jump-overs\n40 dumbbell snatches\n15 burpee box jump-overs\n50 dumbbell snatches\n15 burpee box jump-overs\n\nMen use 50-lb dumbbell, 24-in box\nWomen use 35-lb dumbbell, 20-in box\n\nTime cap: 20 minutes\n\nTiebreak: Record time at end of each set of burpee box jump-overs.",
       scorecardPdf: "/scorecards/2021/21.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=S_3Yh_P-v60&t=855",
+      announcementWinner: "Justin Medeiros",
     },
     {
       ordinal: 3,
@@ -552,6 +618,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For total time:\n15 front squats\n30 toes-to-bars\n15 thrusters\nRest 1 min.\n15 front squats\n30 chest-to-bar pull-ups\n15 thrusters\nRest 1 min.\n15 front squats\n30 bar muscle-ups\n15 thrusters\n\n21.4 begins immediately upon completing or reaching the time cap for 21.3.\n\nMen use 95 lb\nWomen use 65 lb\n\nTime cap: 15 minutes\n\nTiebreak: Record time at end of each set of thrusters.",
       scorecardPdf: "/scorecards/2021/21.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=T4mIqS7Xh98&t=958",
+      announcementWinner: "Scott Panchik",
     },
     {
       ordinal: 4,
@@ -563,6 +631,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete the following complex for max load:\n1 deadlift\n1 clean\n1 hang clean\n1 jerk\n\nTime begins immediately following the completion of 21.3.\n\nTime cap: 7 minutes\n\nMovements must be completed in one continuous sequence without rest or interruption. Unlimited attempts allowed within 7 minutes.\n\nScore is the heaviest weight successfully lifted (in pounds).\n\nTiebreak: In the event of a tie, 21.3 results will be used to break the tie.",
       scorecardPdf: "/scorecards/2021/21.3.pdf", // Same PDF as 21.3
+      announcementVideo: "https://www.youtube.com/watch?v=T4mIqS7Xh98&t=958",
+      announcementWinner: "Scott Panchik",
     },
   ],
   2022: [
@@ -578,6 +648,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many rounds as possible in 15 minutes of:\n3 wall walks\n12 dumbbell snatches (alternating)\n15 box jump-overs\n\nMen use 50-lb dumbbell, 24-in box\nWomen use 35-lb dumbbell, 20-in box\n\nTime cap: 15 minutes\n\nAthletes must step down from box (no rebounding).\n\nNo tiebreak for this workout.",
       scorecardPdf: "/scorecards/2022/22.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=E9HK9ywg158&t=940",
+      announcementWinner: "Mal O'Brien",
     },
     {
       ordinal: 2,
@@ -592,6 +664,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "1-2-3-4-5-6-7-8-9-10-9-8-7-6-5-4-3-2-1 reps for time of:\nDeadlifts\nBar-facing burpees\n\nMen use 225 lb\nWomen use 155 lb\n\nTime cap: 10 minutes\n\nPyramid up from 1 to 10 reps, then back down to 1 rep.\n\nNo tiebreak for this workout.",
       scorecardPdf: "/scorecards/2022/22.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=m63MhNf0jYc&t=910",
+      announcementWinner: "Justin Medeiros",
     },
     {
       ordinal: 3,
@@ -611,6 +685,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n21 pull-ups\n42 double-unders\n21 thrusters (weight 1)\n18 chest-to-bar pull-ups\n36 double-unders\n18 thrusters (weight 2)\n15 bar muscle-ups\n30 double-unders\n15 thrusters (weight 3)\n\nMen use 95 lb, then 115 lb, then 135 lb\nWomen use 65 lb, then 75 lb, then 85 lb\n\nTime cap: 12 minutes\n\nTiebreak: Record time at end of 21 thrusters (84 reps) and 18 thrusters (156 reps).",
       scorecardPdf: "/scorecards/2022/22.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=vW7m9S10W-U&t=955",
+      announcementWinner: "Gui Malheiros",
     },
   ],
   2023: [
@@ -630,6 +706,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "14.4 Repeat\n\nComplete as many reps as possible in 14 minutes of:\n60-calorie row\n50 toes-to-bars\n40 wall-ball shots\n30 cleans\n20 muscle-ups\n\nMen use 20-lb ball to 10-ft target, 135-lb cleans\nWomen use 14-lb ball to 9-ft target, 95-lb cleans\n\nTiebreak: Record time after completing each set of cleans.",
       scorecardPdf: "/scorecards/2023/23.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=f9pGis7M85Y&t=1515",
+      announcementWinner: "Laura Horvath",
     },
     {
       ordinal: 2,
@@ -642,6 +720,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Complete as many reps as possible in 15 minutes of:\n5 burpee pull-ups\n10 shuttle runs (1 rep = 50 ft)\n\n*Add 5 burpee pull-ups after each round.\n\nRound 1: 5 burpee pull-ups + 10 shuttle runs\nRound 2: 10 burpee pull-ups + 10 shuttle runs\nRound 3: 15 burpee pull-ups + 10 shuttle runs\nEtc.\n\nTime cap: 15 minutes\n\n23.2B begins immediately after.\n\nNo tiebreak for 23.2A.",
       scorecardPdf: "/scorecards/2023/23.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=x0xR8vD3YkE&t=1140",
+      announcementWinner: "Pat Vellner",
     },
     {
       ordinal: 3,
@@ -653,6 +733,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Immediately following 23.2A, athletes will have 5 minutes to establish:\n1-rep-max thruster (from the floor)\n\nTime cap: 5 minutes\n\nAthletes may make as many attempts as they'd like. Assistance loading the barbell between attempts is allowed.\n\nTiebreak: If athletes tie on weight lifted, 23.2A score will be used as tiebreak.",
       scorecardPdf: "/scorecards/2023/23.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=x0xR8vD3YkE&t=1140",
+      announcementWinner: "Pat Vellner",
     },
     {
       ordinal: 4,
@@ -671,6 +753,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "Starting with a 6-minute time cap, complete as many reps as possible of:\n5 wall walks\n50 double-unders\n15 snatches (weight 1)\n5 wall walks\n50 double-unders\n12 snatches (weight 2)\n\n*If completed before the 6-minute time cap, add 3 minutes to the time cap and complete:\n20 strict handstand push-ups\n50 double-unders\n9 snatches (weight 3)\n\n*If completed before the 9-minute time cap, add 3 minutes to the time cap and complete:\n20 strict handstand push-ups\n50 double-unders\n6 snatches (weight 4)\n\nMen: 95 lb, 135 lb, 185 lb, 225 lb\nWomen: 65 lb, 95 lb, 125 lb, 155 lb\n\nTiebreak: Time after completing each set of snatches.",
       scorecardPdf: "/scorecards/2023/23.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=d7_tL9kS-4M&t=898",
+      announcementWinner: "Mal O'Brien",
     },
   ],
   2024: [
@@ -690,6 +774,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n21 dumbbell snatches, arm 1\n21 lateral burpees over dumbbell\n21 dumbbell snatches, arm 2\n21 lateral burpees over dumbbell\n15 dumbbell snatches, arm 1\n15 lateral burpees over dumbbell\n15 dumbbell snatches, arm 2\n15 lateral burpees over dumbbell\n9 dumbbell snatches, arm 1\n9 lateral burpees over dumbbell\n9 dumbbell snatches, arm 2\n9 lateral burpees over dumbbell\n\nMen use 50-lb dumbbell\nWomen use 35-lb dumbbell\n\nTime cap: 15 minutes\n\nYou may start the rounds of 15 and 9 snatches with either arm. You may NOT switch arms in the middle of a set.\n\nTiebreak: Time after completing 84 reps (first four movements) or 144 reps (first eight movements).",
       scorecardPdf: "/scorecards/2024/24.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=44K6SeOF-Xk&t=2790",
+      announcementWinner: "Jeff Adler",
     },
     {
       ordinal: 2,
@@ -703,6 +789,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "As many rounds and reps as possible in 20 minutes of:\n300-meter row\n10 deadlifts\n50 double-unders\n\nMen use 185 lb\nWomen use 125 lb\n\nDuring the row, 10 meters = 1 rep, rounded down.\n\nNo tiebreak for this workout.",
       scorecardPdf: "/scorecards/2024/24.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=s0KHkfZ0ptM&t=2475",
+      announcementWinner: "Justin Medeiros",
     },
     {
       ordinal: 3,
@@ -721,6 +809,8 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "All for time:\n5 rounds of:\n10 thrusters (weight 1)\n10 chest-to-bar pull-ups\n\nRest 1 minute, then:\n\n5 rounds of:\n7 thrusters (weight 2)\n7 bar muscle-ups\n\nMen: 95 lb, 135 lb\nWomen: 65 lb, 95 lb\n\nTime cap: 15 minutes\n\nThe timer DOES NOT STOP during the 1-minute rest. Athletes may have assistance changing the barbell load or two bars may be used.\n\nTiebreak: Time after completing 100 reps (5 rounds of thrusters and chest-to-bar pull-ups).",
       scorecardPdf: "/scorecards/2024/24.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=zD7_A_RkY14&t=2180",
+      announcementWinner: "Roman Khrennikov",
     },
   ],
   2025: [
