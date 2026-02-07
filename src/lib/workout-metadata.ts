@@ -735,6 +735,7 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "As many rounds and reps as possible in 15 minutes of:\n3 lateral burpees over the dumbbell\n3 dumbbell hang clean-to-overheads\n30-foot walking lunge (2 x 15 feet)\n\n*After completing each round, add 3 reps to the burpees and hang clean-to-overheads.\n\nRound 1: 3-3-2\nRound 2: 6-6-2\nRound 3: 9-9-2\nEtc.\n\nMen use 50-lb dumbbell\nWomen use 35-lb dumbbell\n\nDuring the lunge, each 15-foot section is considered 1 rep.\n\nNo tiebreak for this workout.",
       scorecardPdf: "/scorecards/2025/25.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=6DHhQzpbYq4&t=3225",
     },
     {
       ordinal: 2,
@@ -754,6 +755,7 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "22.3 Repeat\n\nFor time:\n21 pull-ups\n42 double-unders\n21 thrusters (weight 1)\n18 chest-to-bar pull-ups\n36 double-unders\n18 thrusters (weight 2)\n15 bar muscle-ups\n30 double-unders\n15 thrusters (weight 3)\n\nMen: 95 lb, 115 lb, 135 lb\nWomen: 65 lb, 75 lb, 85 lb\n\nTime cap: 12 minutes\n\nTiebreak: Time after completing 21 thrusters (84 reps) or 18 thrusters (156 reps).",
       scorecardPdf: "/scorecards/2025/25.2.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=kt_XWmdtVxk&t=2352",
     },
     {
       ordinal: 3,
@@ -772,6 +774,7 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n5 wall walks\n50-calorie row\n5 wall walks\n25 deadlifts\n5 wall walks\n25 cleans\n5 wall walks\n25 snatches\n5 wall walks\n50-calorie row\n\nMen: 225-lb deadlift, 135-lb clean, 95-lb snatch\nWomen: 155-lb deadlift, 85-lb clean, 65-lb snatch\n\nTime cap: 20 minutes\n\nTiebreak: Time after completing each set of 5 wall walks.",
       scorecardPdf: "/scorecards/2025/25.3.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=x7seLzuBu1g&t=3092",
     },
   ],
 };

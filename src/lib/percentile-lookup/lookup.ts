@@ -8,7 +8,7 @@
 import type { WorkoutMetadata } from "@/types";
 import type { LookupConfig, LookupCache, LookupResult, LookupDebug } from "./types";
 import { createCache, getApiCallCount } from "./api-client";
-import { normalizeUserScore } from "./normalize";
+import { normalizeUserScore, applyTierOffset } from "./normalize";
 import { buildAnchorMap, findBracketFromAnchors } from "./anchors";
 import {
   binarySearchForPage,
@@ -52,6 +52,8 @@ export async function lookupPercentile(
       };
     }
 
+    // Apply tier offset for scaled/foundations user scores
+    normalized.raw = applyTierOffset(normalized.raw, config.scaled);
     debug.normalizedScore = normalized.raw;
 
     // Build anchor map (samples strategic pages)

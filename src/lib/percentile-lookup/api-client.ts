@@ -55,7 +55,9 @@ export async function fetchLeaderboardPage(
   const url = new URL(`${CROSSFIT_API_BASE}/${config.year}/leaderboards`);
   url.searchParams.set("view", "0");
   url.searchParams.set("division", config.division.toString());
-  url.searchParams.set("scaled", config.scaled.toString());
+  // Always query the full mixed leaderboard (RX + Scaled + Foundations).
+  // config.scaled only affects the user's score offset, not the API query.
+  url.searchParams.set("scaled", "0");
   url.searchParams.set("page", page.toString());
   url.searchParams.set("region", "0");
   // Sort by the specific workout (0=overall, 1=workout1, 2=workout2, etc.)

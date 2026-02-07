@@ -13,6 +13,14 @@ import type { NormalizedScore } from "./types";
 // Large offset to ensure capped athletes always rank after finishers
 const CAPPED_OFFSET = 1_000_000;
 
+// Offsets for scaled/foundations athletes in API data.
+// The CrossFit API returns a mixed leaderboard with this ranking:
+//   RX Finishers > RX Capped > Scaled Finishers > Scaled Capped > Foundations Finishers > Foundations Capped
+// Scores from the API include " - s" (scaled) or " - f" (foundations) suffixes.
+// These offsets ensure the "lower = better" convention is preserved across tiers.
+const SCALED_OFFSET = 2_000_000;
+const FOUNDATIONS_OFFSET = 4_000_000;
+
 /**
  * Normalize a user-entered score to a comparable numeric value.
  * Lower values = better rank.
@@ -55,28 +63,49 @@ export function normalizeApiScore(
   scoreDisplay: string,
   workout: WorkoutMetadata
 ): NormalizedScore | null {
-  // Strip any scaled/foundations suffix (e.g., " - s" or " - f")
   let normalized = scoreDisplay.toLowerCase().trim();
+
+  // Detect scaled/foundations suffix before stripping
+  let tierOffset = 0;
+  if (/\s*-\s*f$/.test(normalized)) {
+    tierOffset = FOUNDATIONS_OFFSET;
+  } else if (/\s*-\s*s$/.test(normalized)) {
+    tierOffset = SCALED_OFFSET;
+  }
+
+  // Strip the suffix
   normalized = normalized.replace(/\s*-\s*[sf]$/, "");
 
-  // Handle hybrid workouts
+  // Get base normalized score
+  let result: NormalizedScore | null;
+
   if (workout.cappedScoreType === "reps" && workout.totalReps) {
-    return normalizeHybridApiScore(normalized, workout);
+    result = normalizeHybridApiScore(normalized, workout);
+  } else {
+    switch (workout.scoreType) {
+      case "time":
+        result = normalizeTimeScore(normalized, workout);
+        break;
+      case "reps":
+        result = normalizeRepsScore(normalized);
+        break;
+      case "rounds_reps":
+        result = normalizeRoundsRepsScore(normalized, workout);
+        break;
+      case "load":
+        result = normalizeLoadScore(normalized);
+        break;
+      default:
+        result = null;
+    }
   }
 
-  // Handle by score type
-  switch (workout.scoreType) {
-    case "time":
-      return normalizeTimeScore(normalized, workout);
-    case "reps":
-      return normalizeRepsScore(normalized);
-    case "rounds_reps":
-      return normalizeRoundsRepsScore(normalized, workout);
-    case "load":
-      return normalizeLoadScore(normalized);
-    default:
-      return null;
+  // Apply tier offset so scaled/foundations athletes rank below RX
+  if (result && tierOffset > 0) {
+    result.raw += tierOffset;
   }
+
+  return result;
 }
 
 /**
@@ -306,6 +335,20 @@ function formatTime(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
+/**
+ * Apply tier offset for scaled/foundations scores.
+ * Used to offset user-entered scores so they compare correctly
+ * against the mixed leaderboard from the CrossFit API.
+ *
+ * @param raw - The base normalized score value
+ * @param scaled - 0=RX, 1=Scaled, 2=Foundations
+ */
+export function applyTierOffset(raw: number, scaled: number): number {
+  if (scaled === 2) return raw + FOUNDATIONS_OFFSET;
+  if (scaled === 1) return raw + SCALED_OFFSET;
+  return raw;
 }
 
 /**

@@ -113,6 +113,8 @@ export interface WorkoutMetadata {
   detailedDescription?: string;
   /** Path to official scorecard PDF */
   scorecardPdf?: string;
+  /** YouTube URL for workout announcement video */
+  announcementVideo?: string;
 }
 
 // Division mapping
@@ -151,6 +153,7 @@ export interface UserScore {
   percentile: number | null;
   estimatedRank: number | null;
   tiebreak?: string; // Optional tiebreak time (e.g., "8:41")
+  scaled?: number; // 0=RX, 1=Scaled, 2=Foundations
 }
 
 export interface SimulatorResults {

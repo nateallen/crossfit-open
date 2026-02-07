@@ -6,11 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { PercentileBar } from "./PercentileBar";
 import { parseScore, formatTime } from "@/lib/score-parser";
 import type { WorkoutMetadata, ParsedScore } from "@/types";
@@ -20,7 +15,9 @@ interface WorkoutCardProps {
   workout: WorkoutMetadata;
   value: string;
   tiebreak?: string;
+  scaled?: number; // 0=RX, 1=Scaled, 2=Foundations
   onChange: (value: string, parsed: ParsedScore | null, tiebreak?: string) => void;
+  onScaledChange?: (scaled: number) => void;
   percentile: number | null;
   estimatedRank: number | null;
   totalAthletes: number | null;
@@ -38,7 +35,9 @@ export function WorkoutCard({
   workout,
   value,
   tiebreak = "",
+  scaled = 0,
   onChange,
+  onScaledChange,
   percentile,
   estimatedRank,
   totalAthletes,
@@ -193,80 +192,112 @@ export function WorkoutCard({
     >
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CardTitle className="text-lg font-semibold">
-              {workout.name}
-            </CardTitle>
-            {workout.scorecardPdf && (
-              <a
-                href={workout.scorecardPdf}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                title="View official scorecard"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                  <polyline points="10 9 9 9 8 9" />
-                </svg>
-              </a>
-            )}
-          </div>
+          <CardTitle className="text-lg font-semibold">
+            {workout.name}
+          </CardTitle>
           <Badge variant="secondary" className="text-xs">
             {getScoreTypeLabel()}
           </Badge>
         </div>
-        {workout.description && (
-          <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-            <div className="flex items-start gap-1 mt-1">
-              <p className="text-xs text-muted-foreground flex-1">
-                {workout.description}
-              </p>
-              {workout.detailedDescription && (
-                <CollapsibleTrigger asChild>
-                  <button
-                    className="text-xs text-primary hover:text-primary/80 flex items-center gap-0.5 shrink-0 transition-colors"
-                    title={isDetailsOpen ? "Hide details" : "Show full workout"}
-                  >
-                    <span className="underline underline-offset-2">
-                      {isDetailsOpen ? "Less" : "More"}
-                    </span>
-                    <ChevronDown
-                      className={cn(
-                        "h-3 w-3 transition-transform duration-200",
-                        isDetailsOpen && "rotate-180"
-                      )}
-                    />
-                  </button>
-                </CollapsibleTrigger>
-              )}
-            </div>
-            {workout.detailedDescription && (
-              <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
-                <div className="mt-2 p-3 bg-muted/50 rounded-md border">
-                  <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-sans leading-relaxed">
-                    {workout.detailedDescription}
-                  </pre>
-                </div>
-              </CollapsibleContent>
-            )}
-          </Collapsible>
+        <div className="flex items-center gap-3 mt-1">
+          {(workout.detailedDescription || workout.description) && (
+            <button
+              onClick={() => setIsDetailsOpen(!isDetailsOpen)}
+              className="text-xs text-primary hover:text-primary/80 flex items-center gap-0.5 transition-colors"
+            >
+              <span className="underline underline-offset-2">
+                {isDetailsOpen ? "Hide description" : "Description"}
+              </span>
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 transition-transform duration-200",
+                  isDetailsOpen && "rotate-180"
+                )}
+              />
+            </button>
+          )}
+          {workout.scorecardPdf && (
+            <a
+              href={workout.scorecardPdf}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+              Scorecard
+            </a>
+          )}
+          {workout.announcementVideo && (
+            <a
+              href={workout.announcementVideo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              Video
+            </a>
+          )}
+        </div>
+        {isDetailsOpen && (workout.detailedDescription || workout.description) && (
+          <div className="mt-2 p-3 bg-muted/50 rounded-md border">
+            <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-sans leading-relaxed">
+              {workout.detailedDescription || workout.description}
+            </pre>
+          </div>
         )}
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* RX / Scaled / Foundations Toggle */}
+        <div className="flex rounded-md border overflow-hidden">
+          {[
+            { value: 0, label: "RX" },
+            { value: 1, label: "Scaled" },
+            { value: 2, label: "Foundations" },
+          ].map((option) => (
+            <button
+              key={option.value}
+              onClick={() => onScaledChange?.(option.value)}
+              className={cn(
+                "flex-1 px-3 py-1.5 text-xs font-medium transition-colors",
+                scaled === option.value
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background text-muted-foreground hover:bg-muted"
+              )}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+
         {/* Hybrid Workout Toggle */}
         {isHybrid && (
           <div className="flex gap-2">

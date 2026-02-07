@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     // Validate division
     const divisionNum = parseInt(String(division), 10);
-    if (isNaN(divisionNum) || divisionNum < 1 || divisionNum > 20) {
+    if (isNaN(divisionNum) || divisionNum < 1 || divisionNum > 25) {
       return NextResponse.json(
         { success: false, error: "Invalid division" },
         { status: 400 }

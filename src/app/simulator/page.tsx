@@ -17,9 +17,6 @@ import type { ParsedScore, UserScore, DivisionId } from "@/types";
 import { DIVISIONS } from "@/types";
 import { getWorkoutsForYear, getAvailableYears } from "@/lib/workout-metadata";
 
-// Currently we only support RX score entry (scaled=0)
-const USER_SCALED_TYPE = 0;
-
 function getInitialYear(yearParam: string | null, availableYears: number[]): number {
   if (yearParam) {
     const parsed = parseInt(yearParam, 10);
@@ -138,7 +135,7 @@ function SimulatorContent() {
       body: JSON.stringify({
         year,
         division,
-        scaled: USER_SCALED_TYPE,
+        scaled: 0,
         totalPoints,
       }),
       signal: controller.signal,
@@ -166,9 +163,9 @@ function SimulatorContent() {
 
   // Look up percentile using the anchor-based API
   const lookupPercentile = useCallback(
-    async (ordinal: number, score: string, tiebreak?: string) => {
-      // Create a lookup key that includes tiebreak
-      const lookupKey = `${score}|${tiebreak || ""}`;
+    async (ordinal: number, score: string, tiebreak?: string, workoutScaled: number = 0) => {
+      // Create a lookup key that includes tiebreak and scaled
+      const lookupKey = `${score}|${tiebreak || ""}|${workoutScaled}`;
 
       // Skip if we already looked up this exact score+tiebreak
       if (lastLookedUp.current[ordinal] === lookupKey) {
@@ -193,7 +190,7 @@ function SimulatorContent() {
           body: JSON.stringify({
             year,
             division,
-            scaled: USER_SCALED_TYPE,
+            scaled: workoutScaled,
             workoutOrdinal: ordinal,
             score,
             tiebreak: tiebreak || undefined,
@@ -255,6 +252,9 @@ function SimulatorContent() {
 
   const handleScoreChange = useCallback(
     (ordinal: number, value: string, parsed: ParsedScore | null, tiebreak?: string) => {
+      // Get current scaled value for this workout
+      const workoutScaled = scores[ordinal]?.scaled ?? 0;
+
       // Update the input immediately
       setScores((prev) => {
         // Don't update if nothing changed
@@ -269,13 +269,14 @@ function SimulatorContent() {
             percentile: prev[ordinal]?.percentile ?? null,
             estimatedRank: prev[ordinal]?.estimatedRank ?? null,
             tiebreak,
+            scaled: prev[ordinal]?.scaled ?? 0,
           },
         };
       });
 
       // If we have a valid parsed score, look up the percentile
       if (parsed?.isValid && value.trim()) {
-        lookupPercentile(ordinal, value, tiebreak);
+        lookupPercentile(ordinal, value, tiebreak, workoutScaled);
       } else if (!value.trim()) {
         // Clear percentile if score is empty
         delete lastLookedUp.current[ordinal];
@@ -287,11 +288,38 @@ function SimulatorContent() {
             percentile: null,
             estimatedRank: null,
             tiebreak: undefined,
+            scaled: prev[ordinal]?.scaled ?? 0,
           },
         }));
       }
     },
-    [lookupPercentile]
+    [lookupPercentile, scores]
+  );
+
+  const handleScaledChange = useCallback(
+    (ordinal: number, newScaled: number) => {
+      // Update scaled value for this workout
+      setScores((prev) => ({
+        ...prev,
+        [ordinal]: {
+          ...prev[ordinal],
+          input: prev[ordinal]?.input ?? "",
+          parsed: prev[ordinal]?.parsed ?? null,
+          percentile: prev[ordinal]?.percentile ?? null,
+          estimatedRank: prev[ordinal]?.estimatedRank ?? null,
+          scaled: newScaled,
+        },
+      }));
+
+      // Re-trigger lookup if there's a valid score
+      const current = scores[ordinal];
+      if (current?.parsed?.isValid && current.input.trim()) {
+        // Clear the lookup cache so it re-fetches with new scaled
+        delete lastLookedUp.current[ordinal];
+        lookupPercentile(ordinal, current.input, current.tiebreak, newScaled);
+      }
+    },
+    [lookupPercentile, scores]
   );
 
   // Get the total athletes for a specific workout
@@ -361,6 +389,7 @@ function SimulatorContent() {
             <SelectItem value={String(DIVISIONS.WOMEN_65_PLUS)}>Women 65+</SelectItem>
           </SelectContent>
         </Select>
+
       </div>
 
       {/* Main Content */}
@@ -383,9 +412,11 @@ function SimulatorContent() {
                   workout={workout}
                   value={score.input}
                   tiebreak={score.tiebreak}
+                  scaled={score.scaled ?? 0}
                   onChange={(value, parsed, tiebreak) =>
                     handleScoreChange(workout.ordinal, value, parsed, tiebreak)
                   }
+                  onScaledChange={(s) => handleScaledChange(workout.ordinal, s)}
                   percentile={score.percentile}
                   estimatedRank={score.estimatedRank}
                   totalAthletes={getDisplayTotalAthletes(workout.ordinal)}
