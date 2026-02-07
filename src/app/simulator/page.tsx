@@ -371,8 +371,8 @@ function SimulatorContent() {
             <SelectValue placeholder="Select division" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={String(DIVISIONS.MEN)}>Men (RX)</SelectItem>
-            <SelectItem value={String(DIVISIONS.WOMEN)}>Women (RX)</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN)}>Men</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN)}>Women</SelectItem>
             <SelectItem value={String(DIVISIONS.MEN_35_39)}>Men 35-39</SelectItem>
             <SelectItem value={String(DIVISIONS.WOMEN_35_39)}>Women 35-39</SelectItem>
             <SelectItem value={String(DIVISIONS.MEN_40_44)}>Men 40-44</SelectItem>
