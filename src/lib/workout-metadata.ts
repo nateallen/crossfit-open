@@ -931,6 +931,7 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       detailedDescription:
         "For time:\n20 wall-ball shots\n18 box jump-overs\n30 wall-ball shots\n18 box jump-overs\n40 wall-ball shots\n18 medicine-ball box step-overs\n66 wall-ball shots\n18 medicine-ball box step-overs\n40 wall-ball shots\n18 box jump-overs\n30 wall-ball shots\n18 box jump-overs\n20 wall-ball shots\n\nMen use 20-lb ball to 10-ft target, 24-in box\nWomen use 14-lb ball to 9-ft target, 20-in box\n\nTime cap: 12 minutes\n\nTiebreak times are recorded after each set of box jump-overs or box step-overs (at 38, 86, 144, 228, 286, and 334 reps). The last completed set is used as the tiebreak.",
       scorecardPdf: "/scorecards/2026/26.1.pdf",
+      announcementVideo: "https://www.youtube.com/watch?v=RNF5Y21uU0U&t=2601",
     },
   ],
 };
