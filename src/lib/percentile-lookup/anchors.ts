@@ -78,12 +78,51 @@ export async function buildAnchorMap(
       }
     } catch (error) {
       console.error(`Failed to fetch anchor page ${page}:`, error);
-      // Continue with other pages
+
+      // Try a fallback: fetch an earlier page (closer to page 1 where scores are more likely)
+      // This helps when the workout is new and many athletes haven't submitted scores yet
+      if (page > 10) {
+        const fallbackPage = Math.max(1, Math.floor(page / 2));
+        try {
+          const fallbackPageData = await fetchLeaderboardPage(config, fallbackPage, cache);
+          console.log(`Using fallback page ${fallbackPage} instead of ${page}`);
+
+          // Create anchor point using the fallback page
+          for (let i = 0; i < percentiles.length; i++) {
+            anchors.push({
+              percentile: percentiles[i],
+              targetRank: targetRanks[i],
+              page: fallbackPage,
+              pageData: fallbackPageData,
+            });
+          }
+        } catch (fallbackError) {
+          console.error(`Fallback page ${fallbackPage} also failed:`, fallbackError);
+          // Continue with other pages
+        }
+      }
     }
   }
 
   // Sort anchors by percentile
   anchors.sort((a, b) => a.percentile - b.percentile);
+
+  // Ensure we have at least some anchors from the top of the leaderboard
+  // If we have very few anchors, add page 1 as a guaranteed anchor
+  if (anchors.length < 3 && !anchors.some((a) => a.page === 1)) {
+    try {
+      const page1Data = await fetchLeaderboardPage(config, 1, cache);
+      anchors.unshift({
+        percentile: 1,
+        targetRank: 1,
+        page: 1,
+        pageData: page1Data,
+      });
+      console.log("Added page 1 as guaranteed anchor");
+    } catch (error) {
+      console.error("Failed to fetch page 1 as fallback:", error);
+    }
+  }
 
   // Store in cache
   cache.anchors = anchors;

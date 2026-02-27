@@ -54,8 +54,20 @@ export async function binarySearchForPage(
   while (lowPage <= highPage) {
     const midPage = Math.floor((lowPage + highPage) / 2);
 
-    const pageData = await fetchLeaderboardPage(config, midPage, cache);
-    pagesSearched.push(midPage);
+    let pageData: PageData;
+    try {
+      pageData = await fetchLeaderboardPage(config, midPage, cache);
+      pagesSearched.push(midPage);
+    } catch (error) {
+      // Page has no scores - this happens when the workout is new
+      // and many athletes haven't submitted yet
+      console.log(`Page ${midPage} has no scores, adjusting search bounds`);
+
+      // If we hit a page with no scores, it means we went too far
+      // Adjust highPage to search earlier pages
+      highPage = midPage - 1;
+      continue;
+    }
 
     const { firstScore, lastScore } = pageData;
 

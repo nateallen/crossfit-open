@@ -912,6 +912,27 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       announcementVideo: "https://www.youtube.com/watch?v=x7seLzuBu1g&t=3092",
     },
   ],
+  2026: [
+    {
+      ordinal: 1,
+      name: "26.1",
+      scoreType: "time", // Finishers get time
+      cappedScoreType: "reps", // Capped athletes get reps
+      timeCapSeconds: 12 * 60, // 12 minutes
+      totalReps: 354, // 20+18+30+18+40+18+66+18+40+18+30+18+20
+      sortDirection: "asc", // Lower time is better (finishers first)
+      tiebreak: {
+        atReps: 38, // Time after each set of box jump-overs or box step-overs (38, 86, 144, 228, 286, 334)
+        description:
+          "Time after completing each set of box jump-overs or box step-overs",
+      },
+      description:
+        "For time: Wall-ball shots + box jump-overs + medicine-ball box step-overs (20-18-30-18-40-18-66-18-40-18-30-18-20)",
+      detailedDescription:
+        "For time:\n20 wall-ball shots\n18 box jump-overs\n30 wall-ball shots\n18 box jump-overs\n40 wall-ball shots\n18 medicine-ball box step-overs\n66 wall-ball shots\n18 medicine-ball box step-overs\n40 wall-ball shots\n18 box jump-overs\n30 wall-ball shots\n18 box jump-overs\n20 wall-ball shots\n\nMen use 20-lb ball to 10-ft target, 24-in box\nWomen use 14-lb ball to 9-ft target, 20-in box\n\nTime cap: 12 minutes\n\nTiebreak times are recorded after each set of box jump-overs or box step-overs (at 38, 86, 144, 228, 286, and 334 reps). The last completed set is used as the tiebreak.",
+      scorecardPdf: "/scorecards/2026/26.1.pdf",
+    },
+  ],
 };
 
 /**
