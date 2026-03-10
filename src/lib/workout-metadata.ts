@@ -933,6 +933,26 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       scorecardPdf: "/scorecards/2026/26.1.pdf",
       announcementVideo: "https://www.youtube.com/watch?v=RNF5Y21uU0U&t=2601",
     },
+    {
+      ordinal: 2,
+      name: "26.2",
+      scoreType: "time", // Finishers get time
+      cappedScoreType: "reps", // Capped athletes get reps
+      timeCapSeconds: 15 * 60, // 15 minutes
+      totalReps: 132, // 3 rounds of (4 lunges + 20 snatches + 20 gymnastics) = 3 × 44
+      sortDirection: "asc", // Lower time is better (finishers first)
+      tiebreak: {
+        atReps: 24, // Time after each set of dumbbell snatches (24, 68, 112)
+        description:
+          "Time after completing each set of alternating dumbbell snatches",
+      },
+      description:
+        "For time: 3 rounds of 80-ft DB OH lunges + 20 alt DB snatches + 20 pull-ups/C2B/muscle-ups (50/35 lb)",
+      detailedDescription:
+        "For time:\n80-foot dumbbell overhead walking lunge\n20 alternating dumbbell snatches\n20 pull-ups\n\n80-foot dumbbell overhead walking lunge\n20 alternating dumbbell snatches\n20 chest-to-bar pull-ups\n\n80-foot dumbbell overhead walking lunge\n20 alternating dumbbell snatches\n20 muscle-ups\n\nMen use 50-lb (22.5-kg) dumbbell\nWomen use 35-lb (15-kg) dumbbell\n\nTime cap: 15 minutes\n\nTiebreak times are recorded after each set of alternating dumbbell snatches (at 24, 68, and 112 reps). The last completed set is used as the tiebreak.",
+      scorecardPdf: "/scorecards/2026/26.2.pdf",
+      announcementVideo: null,
+    },
   ],
 };
 
