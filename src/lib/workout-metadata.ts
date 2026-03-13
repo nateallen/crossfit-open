@@ -953,6 +953,26 @@ export const WORKOUT_METADATA: Record<number, WorkoutMetadata[]> = {
       scorecardPdf: "/scorecards/2026/26.2.pdf",
       announcementVideo: null,
     },
+    {
+      ordinal: 3,
+      name: "26.3",
+      scoreType: "time", // Finishers get time
+      cappedScoreType: "reps", // Capped athletes get reps
+      timeCapSeconds: 16 * 60, // 16 minutes
+      totalReps: 288, // 6 rounds × (12 burpees + 12 cleans + 12 burpees + 12 thrusters)
+      sortDirection: "asc", // Lower time is better (finishers first)
+      tiebreak: {
+        atReps: 48, // Time after each set of thrusters (48, 96, 144, 192, 240)
+        description:
+          "Time after completing each set of thrusters",
+      },
+      description:
+        "For time: 2 rounds each at 3 ascending weights of burpees over bar + cleans + burpees over bar + thrusters (95/65, 115/75, 135/85 lb)",
+      detailedDescription:
+        "For time:\n2 rounds of:\n12 burpees over the bar\n12 cleans (95/65 lb)\n12 burpees over the bar\n12 thrusters (95/65 lb)\n\n2 rounds of:\n12 burpees over the bar\n12 cleans (115/75 lb)\n12 burpees over the bar\n12 thrusters (115/75 lb)\n\n2 rounds of:\n12 burpees over the bar\n12 cleans (135/85 lb)\n12 burpees over the bar\n12 thrusters (135/85 lb)\n\nTime cap: 16 minutes\n\nTiebreak times are recorded after each set of thrusters (at 48, 96, 144, 192, and 240 reps). The last completed set is used as the tiebreak.",
+      scorecardPdf: "/scorecards/2026/26.3.pdf",
+      announcementVideo: null,
+    },
   ],
 };
 
