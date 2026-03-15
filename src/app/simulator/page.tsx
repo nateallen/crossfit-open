@@ -373,6 +373,10 @@ function SimulatorContent() {
           <SelectContent>
             <SelectItem value={String(DIVISIONS.MEN)}>Men</SelectItem>
             <SelectItem value={String(DIVISIONS.WOMEN)}>Women</SelectItem>
+            <SelectItem value={String(DIVISIONS.BOYS_14_15)}>Boys 14-15</SelectItem>
+            <SelectItem value={String(DIVISIONS.GIRLS_14_15)}>Girls 14-15</SelectItem>
+            <SelectItem value={String(DIVISIONS.BOYS_16_17)}>Boys 16-17</SelectItem>
+            <SelectItem value={String(DIVISIONS.GIRLS_16_17)}>Girls 16-17</SelectItem>
             <SelectItem value={String(DIVISIONS.MEN_35_39)}>Men 35-39</SelectItem>
             <SelectItem value={String(DIVISIONS.WOMEN_35_39)}>Women 35-39</SelectItem>
             <SelectItem value={String(DIVISIONS.MEN_40_44)}>Men 40-44</SelectItem>
@@ -383,10 +387,12 @@ function SimulatorContent() {
             <SelectItem value={String(DIVISIONS.WOMEN_50_54)}>Women 50-54</SelectItem>
             <SelectItem value={String(DIVISIONS.MEN_55_59)}>Men 55-59</SelectItem>
             <SelectItem value={String(DIVISIONS.WOMEN_55_59)}>Women 55-59</SelectItem>
-            <SelectItem value={String(DIVISIONS.MEN_60_PLUS)}>Men 60+</SelectItem>
-            <SelectItem value={String(DIVISIONS.WOMEN_60_PLUS)}>Women 60+</SelectItem>
-            <SelectItem value={String(DIVISIONS.MEN_65_PLUS)}>Men 65+</SelectItem>
-            <SelectItem value={String(DIVISIONS.WOMEN_65_PLUS)}>Women 65+</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_60_64)}>Men 60-64</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_60_64)}>Women 60-64</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_65_69)}>Men 65-69</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_65_69)}>Women 65-69</SelectItem>
+            <SelectItem value={String(DIVISIONS.MEN_70_PLUS)}>Men 70+</SelectItem>
+            <SelectItem value={String(DIVISIONS.WOMEN_70_PLUS)}>Women 70+</SelectItem>
           </SelectContent>
         </Select>
 
